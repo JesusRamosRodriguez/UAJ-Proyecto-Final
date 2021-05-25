@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Obstacle
+  - Guardia
+  - Boton
+  - Flash
+  - Foto
+  - Espalda
+  - Frente
+  - TopeV
+  - TopeH
+  - TopeObjetivo
+  - Dormido
+  - Objetivo
+  - FrenteF
+  - EspaldaF
+  - Famoso
+  - Vision
+  - Bombilla
+  - Carrete
+  - Crono
+  - Objetos
+  - Taser
+  - Arnold
+  - BotonLaser
+  - Canvas
+  - CamarasLaseres
+  - Transicion
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player
+  - Obstacle
+  - Guardia
+  - Espalda
+  - Frente
+  - Oscuridad
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Suelo
+  - Pared
+  m_SortingLayers:
+  - name: tm_suelo
+    uniqueID: 797708361
+    locked: 0
+  - name: tm_alfombras
+    uniqueID: 2947240135
+    locked: 0
+  - name: rm_paredes
+    uniqueID: 2567091503
+    locked: 0
+  - name: tm_objetos
+    uniqueID: 2835185667
+    locked: 0
+  - name: tm_obSuperiores
+    uniqueID: 4086971737
+    locked: 0
+  - name: tm_obSuperiores2
+    uniqueID: 3321780601
+    locked: 0
+  - name: Oscuridad
+    uniqueID: 3367261385
+    locked: 0
+  - name: tm_obPasillo
+    uniqueID: 2253734181
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: SobreJugador
+    uniqueID: 2028652901
+    locked: 0
+  - name: Particulas
+    uniqueID: 4012687635
+    locked: 0

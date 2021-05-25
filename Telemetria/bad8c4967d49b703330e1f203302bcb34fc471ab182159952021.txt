@@ -1,0 +1,32 @@
+{
+"Session ID": "bad8c4967d49b703330e1f203302bcb34fc471ab182159952021"
+"Machine ID": "bad8c4967d49b703330e1f203302bcb34fc471ab"
+}
+{
+"Inicio sesion": "lvl 0 5/9/2021 6:21:59 PM",
+"Inicio nivel": "lvl 1 5/9/2021 6:22:07 PM",
+"Coleccionable recogido": "lvl 1 5/9/2021 6:22:19 PM",
+"Flash recogido": "lvl 1 5/9/2021 6:22:28 PM",
+"Guardia fotografiado": "lvl 1 5/9/2021 6:22:32 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:22:32 PM",
+"Flash usado": "lvl 1 5/9/2021 6:22:34 PM",
+"Flash usado": "lvl 1 5/9/2021 6:22:43 PM",
+"Coleccionable recogido": "lvl 1 5/9/2021 6:22:48 PM",
+"Flash usado": "lvl 1 5/9/2021 6:22:53 PM",
+"Guardia fotografiado": "lvl 1 5/9/2021 6:23:05 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:23:05 PM",
+"Flash recogido": "lvl 1 5/9/2021 6:23:10 PM",
+"Flash usado": "lvl 1 5/9/2021 6:23:15 PM",
+"Flash usado": "lvl 1 5/9/2021 6:23:17 PM",
+"Guardia fotografiado": "lvl 1 5/9/2021 6:23:18 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:23:18 PM",
+"Flash usado": "lvl 1 5/9/2021 6:23:19 PM",
+"Flash recogido": "lvl 1 5/9/2021 6:23:27 PM",
+"Coleccionable recogido": "lvl 1 5/9/2021 6:23:28 PM",
+"Flash usado": "lvl 1 5/9/2021 6:23:37 PM",
+"Pausa": "lvl 1 5/9/2021 6:23:40 PM",
+"Pausa": "lvl 1 5/9/2021 6:23:42 PM",
+"Pausa": "lvl 1 5/9/2021 6:23:44 PM",
+"Inicio sesion": "lvl 0 5/9/2021 6:23:46 PM",
+"Fin sesion": "lvl 0 5/9/2021 6:23:51 PM",
+}

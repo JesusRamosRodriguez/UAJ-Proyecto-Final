@@ -1,0 +1,22 @@
+{
+"Session ID": "bad8c4967d49b703330e1f203302bcb34fc471ab181425952021"
+"Machine ID": "bad8c4967d49b703330e1f203302bcb34fc471ab"
+}
+{
+"Inicio sesion": "lvl 0 5/9/2021 6:14:25 PM",
+"Inicio nivel": "lvl 1 5/9/2021 6:14:31 PM",
+"Flash usado": "lvl 1 5/9/2021 6:14:34 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:14:50 PM",
+"Reinicio de nivel": "lvl 1 5/9/2021 6:14:56 PM",
+"Inicio nivel": "lvl 1 5/9/2021 6:14:56 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:15:10 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:15:11 PM",
+"Flash usado": "lvl 1 5/9/2021 6:15:18 PM",
+"Fotografia usada": "lvl 1 5/9/2021 6:15:20 PM",
+"Flash usado": "lvl 1 5/9/2021 6:15:20 PM",
+"Flash recogido": "lvl 1 5/9/2021 6:15:29 PM",
+"Coleccionable recogido": "lvl 1 5/9/2021 6:15:30 PM",
+"Pausa": "lvl 1 5/9/2021 6:15:37 PM",
+"Inicio sesion": "lvl 0 5/9/2021 6:15:50 PM",
+"Fin sesion": "lvl 0 5/9/2021 6:15:57 PM",
+}
