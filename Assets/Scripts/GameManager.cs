@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour {
 	public void PickBombilla ()
 	{
 		bombillas++;
-        telemetria.singleEvent("FlashRecogida", getLevelNumber());
+        telemetria.singleEvent("FlashRecogido", getLevelNumber());
     }
 
 	public void PickCarrete ()

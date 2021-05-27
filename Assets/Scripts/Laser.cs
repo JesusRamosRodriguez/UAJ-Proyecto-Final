@@ -21,6 +21,7 @@ public class Laser : MonoBehaviour {
 
     void MuerteLaser()
     {
+        TelemetrySystem.Instance.singleEvent("Muerte", GameManager.instance.getLevelNumber());
         fuenteAudio.Play();
         GameManager.instance.Pierde();
     }

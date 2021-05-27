@@ -3,32 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-//using UnityEngine.SystemInfo.deviceUniqueIdentifier;
-
-public enum SerializeType { JSON, PLAIN };
-
-//public enum TipoEvento
-//{
-//    //Gestion de nivel :
-//    InicioSesion,
-//    InicioNivel,
-//    FinSesion,
-//    FinNivel,
-//    AbandonoNivel,
-//    Reinicio,
-//    Pausa,
-//    //Recogida :
-//    Coleccionable,
-//    FotoRecogida,
-//    FlashRecogida,
-//    //Uso de :
-//    BotonCamara,
-//    FotoUso,
-//    FlashUso,
-//    FotoGuardia,
-//    //Default
-//    Null
-//}
 
 // Eventos que solo pasan el propio evento como información
 public struct singleEvent
@@ -36,8 +10,6 @@ public struct singleEvent
     public string eventName;
     public DateTime time;
     public int nivel;
-
-    public void setNull() { time = DateTime.UtcNow; }
 }
 
 // Eventos que pasan un valor numérico como información
@@ -48,8 +20,6 @@ public struct valueEvent
     public int nivel;
 
     public int value;
-
-    public void setNull() { time = DateTime.UtcNow; }
 }
 
 // Eventos que pasan una coordenada como información
@@ -61,8 +31,6 @@ public struct positionEvent
 
     public float x;
     public float y;
-
-    public void setNull() { time = DateTime.UtcNow; }
 }
 
 // Eventos de inicio, reinicio y fin de nivel
@@ -71,8 +39,6 @@ public struct levelEvent
     public string eventName;
     public DateTime time;
     public int nivel;
-
-    public void setNull() { time = DateTime.UtcNow; }
 }
 
 
@@ -90,7 +56,6 @@ public class TelemetrySystem{
 
         timeElapsed = 0.0f;
         saveFrequency = 30000; // DEFAULT: Actualizamos datos cada 30 segundos
-        encoding = SerializeType.JSON;
 
         threadIsStopped = true;
 
@@ -116,9 +81,6 @@ public class TelemetrySystem{
     // Módulos
     private PersistenceSystem persistence;
 
-    // Lista de eventos y codificación
-    private SerializeType encoding;
-
     // Frecuencia de guardado
     private float saveFrequency; // La frecuencia en ms con la que el sistema serializa y graba
     internal float timeElapsed; // Tiempo transcurrido desde última actualización
@@ -138,7 +100,7 @@ public class TelemetrySystem{
         {
             telemetryThread.Join();
         }
-        //addEvent("FinSesion");
+        levelEvent("FinSesion");
         ForcedUpdate();
         persistence.ShutDown();
     }
@@ -172,7 +134,7 @@ public class TelemetrySystem{
     }
 
     /// <summary>
-    /// Fuerza al sistema a serializar y guardar todos los eventos en la cola
+    /// Fuerza al sistema a serializar y guardar todos los eventos de la cola
     /// independientemente del tiempo transcurrido. Reinicia contador.
     /// </summary>
     public void ForcedUpdate()
@@ -184,15 +146,6 @@ public class TelemetrySystem{
         //}
 
         timeElapsed = 0;
-    }
-
-    /// <summary>
-    /// Tipo de codificación para la serialización
-    /// </summary>
-    /// <param name="s"></param>
-    public void SetEncoding(SerializeType s)
-    {
-        encoding = s;
     }
 
     /// <summary>
@@ -226,7 +179,7 @@ public class TelemetrySystem{
         // ENVIAR AL PROCESADOR
     }
 
-    public void postitionEvent(string eventName, float x, float y, int level)
+    public void positionEvent(string eventName, float x, float y, int level)
     {
         positionEvent e;
         e.eventName = eventName;
