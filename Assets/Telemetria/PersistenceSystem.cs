@@ -7,51 +7,51 @@ public class PersistenceSystem
 {
     #region FileManager (Opening and closing I/O)
 
+    //  Paths
     static string FILEPATH = @".\Telemetria\";
+    static string FILEGENERAL = @".\Telemetria\general.txt";
 
-    private StreamWriter sw = null;
+    //  Streams
+    private FileStream fs;
+    private StreamReader sr;
+    private StreamWriter sw;
 
-    // IDs
+    //  IDs
     string machineID;
     string sessionID;
 
-    private bool OpenWriteFile (string file_path) //Opens output file (writting) if it isn't already openned
+    private bool OpenFile ()    //Opens input/output file (reading/writting) if it isn't already openned
     {
-        if(!Directory.Exists(@".\Telemetria"))
-            Directory.CreateDirectory(@".\Telemetria");
-        
-        if (!File.Exists(file_path))
+        if(!Directory.Exists(FILEPATH))            //Creates upper folder 
+            Directory.CreateDirectory(FILEPATH);   
+
+        //  Opens the i/o stream
+        try
         {
-            sw = File.CreateText(file_path);
-
-            if(File.Exists(file_path)) return true;
-        }
-        return false;
-    }
-
-    public bool Init (string machineID_, string sessionID_)
-    {
-        machineID = machineID_;
-        sessionID = sessionID_;
-
-
-        if (OpenWriteFile(FILEPATH + sessionID + ".txt"))
-        {
-            sw.Write("{\n");
-            sw.WriteLine("\"Session ID\": " + '\"' + sessionID + '\"');
-            sw.WriteLine("\"Machine ID\": " + '\"' + machineID + '\"');
-            sw.Write("}\n");
-            sw.Write("{\n");
+            fs = new FileStream(FILEGENERAL, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            sw = new StreamWriter(fs);
+            sr = new StreamReader(fs);
             return true;
         }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e.Message);
+            return false;
+        }
+
+    }
+
+    public bool Init (string machineID_, string sessionID_) //  initializes the system by opening the filestream of the file of the current session
+    {
+        if (OpenFile())
+            return true;
+
         return false;
     }
 
-    public bool ShutDown()
+    public bool ShutDown()  //  Shuts down the system
     {
-        sw.Write("}");
-
-        sw.Close();
+        fs.Close();
         return true;
     }
     #endregion
