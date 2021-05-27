@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour {
         crono = GameObject.FindWithTag("Crono");
         primeravez = 0;
 
-        telemetria.addEvent("InicioSesion");
+        telemetria.levelEvent("InicioSesion");
     }
 
     public int Bombillas()
@@ -153,13 +153,13 @@ public class GameManager : MonoBehaviour {
 	public void PickBombilla ()
 	{
 		bombillas++;
-        telemetria.addEvent("FlashRecogida", getLevelNumber());
+        telemetria.singleEvent("FlashRecogido", getLevelNumber());
     }
 
 	public void PickCarrete ()
 	{
         carretes++;
-        telemetria.addEvent("FotoRecogida", getLevelNumber());
+        telemetria.singleEvent("FotoRecogida", getLevelNumber());
     }
 
 	// Aumenta la puntuación en una cantidad determinada y guarda de dónde viene la puntuación
@@ -368,7 +368,7 @@ public class GameManager : MonoBehaviour {
         carreteEspecial = 1;
         nivel1.puntos = 0;
 
-        telemetria.addEvent("InicioNivel", getLevelNumber());
+        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
     void Cinematica1()
     {
@@ -386,7 +386,7 @@ public class GameManager : MonoBehaviour {
         carreteEspecial = 1;
         nivel2.puntos = 0;
 
-        telemetria.addEvent("InicioNivel", getLevelNumber());
+        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
     public void Nivel3()
     {
@@ -399,7 +399,7 @@ public class GameManager : MonoBehaviour {
         carreteEspecial = 1;
         nivel3.puntos = 0;
 
-        telemetria.addEvent("InicioNivel", getLevelNumber());
+        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
 
     public void Pierde()
@@ -563,7 +563,7 @@ public class GameManager : MonoBehaviour {
 
     public void Continua()
     {
-        if(getLevelNumber() > 0 && getLevelNumber() < 4) telemetria.addEvent("FinNivel", getLevelNumber());
+        if(getLevelNumber() > 0 && getLevelNumber() < 4) telemetria.levelEvent("FinNivel", getLevelNumber());
         if (actual == "N3Puntuacion3")
         {
             SceneManager.LoadScene("Cinematica2");
@@ -586,7 +586,7 @@ public class GameManager : MonoBehaviour {
     public void Reintentar()
     {
 
-        telemetria.addEvent("Reinicio", getLevelNumber());
+        telemetria.levelEvent("Reinicio", getLevelNumber());
 
         if (actual == "Nivel1")
             Nivel1();

@@ -91,9 +91,9 @@ public class Flash : MonoBehaviour
                 }
 
                 if (ConoFoto.GetComponent<Raycast>().LeVeo() && ConoFoto.GetComponent<Raycast>().FotoAQuien().CompareTag("Guardia"))
-                    TelemetrySystem.Instance.addEvent("FotoGuardia", GameManager.instance.getLevelNumber());
+                    TelemetrySystem.Instance.singleEvent("FotoGuardia", GameManager.instance.getLevelNumber());
 
-                TelemetrySystem.Instance.addEvent("FotoUso", GameManager.instance.getLevelNumber());
+                TelemetrySystem.Instance.singleEvent("FotoUsada", GameManager.instance.getLevelNumber());
                 GameManager.instance.carretes--;
                 //sonido
                 camAudio.clip = cameraSound;
@@ -106,7 +106,7 @@ public class Flash : MonoBehaviour
                 if (ConoFlash.GetComponent<Raycast>().LeVeo() && ConoFlash.GetComponent<Raycast>().Frente())//Si esta de frente y dentro llama a stunn
                     ConoFlash.GetComponent<Raycast>().Stunn();
 
-                TelemetrySystem.Instance.addEvent("FlashUso", GameManager.instance.getLevelNumber());
+                TelemetrySystem.Instance.singleEvent("FlashUsado", GameManager.instance.getLevelNumber());
                 GameManager.instance.bombillas--;
                 //sonido
                 camAudio.clip = flashSound;

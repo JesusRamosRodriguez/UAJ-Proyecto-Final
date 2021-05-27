@@ -27,8 +27,9 @@ public class Controller : MonoBehaviour {
     }
 
     void Update () {
-
-		velocity = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * moveSpeed;//Movimiento
+        TelemetrySystem.Instance.positionEvent("PlayerPosition", this.gameObject.transform.position.x, 
+            this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
+        velocity = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * moveSpeed;//Movimiento
     }
 
     void FixedUpdate() {
@@ -69,7 +70,10 @@ public class Controller : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Guardia") && collision.gameObject.transform.parent.transform.GetChild(0).GetComponent<Detect>().LeVeo())
+        {
+            TelemetrySystem.Instance.singleEvent("Muerte", GameManager.instance.getLevelNumber());
             GameManager.instance.Pierde();
+        }
         else if (collision.CompareTag("Carrete") || collision.CompareTag("Bombilla"))
         {
             fuenteAudio[0].clip = objectSound;
