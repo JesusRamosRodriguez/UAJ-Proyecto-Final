@@ -7,34 +7,68 @@ using UnityEngine;
 
 public enum SerializeType { JSON, PLAIN };
 
-public enum TipoEvento
+//public enum TipoEvento
+//{
+//    //Gestion de nivel :
+//    InicioSesion,
+//    InicioNivel,
+//    FinSesion,
+//    FinNivel,
+//    AbandonoNivel,
+//    Reinicio,
+//    Pausa,
+//    //Recogida :
+//    Coleccionable,
+//    FotoRecogida,
+//    FlashRecogida,
+//    //Uso de :
+//    BotonCamara,
+//    FotoUso,
+//    FlashUso,
+//    FotoGuardia,
+//    //Default
+//    Null
+//}
+
+// Eventos que solo pasan el propio evento como información
+public struct singleEvent
 {
-    //Gestion de nivel :
-    InicioSesion,
-    InicioNivel,
-    FinSesion,
-    FinNivel,
-    AbandonoNivel,
-    Reinicio,
-    Pausa,
-    //Recogida :
-    Coleccionable,
-    FotoRecogida,
-    FlashRecogida,
-    //Uso de :
-    BotonCamara,
-    FotoUso,
-    FlashUso,
-    FotoGuardia,
-    //Default
-    Null
+    public string eventName;
+    public DateTime time;
+    public int nivel;
+
+    public void setNull() { time = DateTime.UtcNow; }
 }
 
-
-//Gestion de Nivel
-public struct TelemetryEvent
+// Eventos que pasan un valor numérico como información
+public struct valueEvent
 {
-    public TipoEvento type;
+    public string eventName;
+    public DateTime time;
+    public int nivel;
+
+    public int value;
+
+    public void setNull() { time = DateTime.UtcNow; }
+}
+
+// Eventos que pasan una coordenada como información
+public struct positionEvent
+{
+    public string eventName;
+    public DateTime time;
+    public int nivel;
+
+    public float x;
+    public float y;
+
+    public void setNull() { time = DateTime.UtcNow; }
+}
+
+// Eventos de inicio, reinicio y fin de nivel
+public struct levelEvent
+{
+    public string eventName;
     public DateTime time;
     public int nivel;
 
@@ -60,7 +94,7 @@ public class TelemetrySystem{
 
         threadIsStopped = true;
 
-        eventQueue = new Queue<TelemetryEvent>();
+        //eventQueue = new Queue<TelemetryEvent>();
 
         persistence = new PersistenceSystem();
         persistence.Init(machineID, sessionID);
@@ -83,7 +117,6 @@ public class TelemetrySystem{
     private PersistenceSystem persistence;
 
     // Lista de eventos y codificación
-    private Queue<TelemetryEvent> eventQueue; // Lista de eventos recogidos a la espera de tratamiento
     private SerializeType encoding;
 
     // Frecuencia de guardado
@@ -105,29 +138,29 @@ public class TelemetrySystem{
         {
             telemetryThread.Join();
         }
-        addEvent("FinSesion");
+        //addEvent("FinSesion");
         ForcedUpdate();
         persistence.ShutDown();
     }
 
     public void Update () {
         timeElapsed += Time.deltaTime * 1000;
-        if(timeElapsed > saveFrequency && threadIsStopped)
-        {
-            telemetryThread = new Thread(SerializeAndSave);
-            telemetryThread.Start();
-        }
+        //if(timeElapsed > saveFrequency && threadIsStopped)
+        //{
+        //    //telemetryThread = new Thread(SerializeAndSave);
+        //    //telemetryThread.Start();
+        //}
 	}
 
 
     private void SerializeAndSave()
     {
         threadIsStopped = false;
-        while (eventQueue.Count > 0)
-        {
-            persistence.toJson(eventQueue.Peek());
-            eventQueue.Dequeue();
-        }
+        //while (eventQueue.Count > 0)
+        //{
+        //    persistence.toJson(eventQueue.Peek());
+        //    eventQueue.Dequeue();
+        //}
 
         timeElapsed = 0;
         threadIsStopped = true;
@@ -144,11 +177,11 @@ public class TelemetrySystem{
     /// </summary>
     public void ForcedUpdate()
     {
-        while (eventQueue.Count > 0)
-        {
-            persistence.toJson(eventQueue.Peek());
-            eventQueue.Dequeue();
-        }
+        //while (eventQueue.Count > 0)
+        //{
+        //    persistence.toJson(eventQueue.Peek());
+        //    eventQueue.Dequeue();
+        //}
 
         timeElapsed = 0;
     }
@@ -172,93 +205,49 @@ public class TelemetrySystem{
     }
 
     #region RECEPCION DE EVENTOS
-    public void addEvent(TelemetryEvent e)
+    public void singleEvent(string eventName, int level)
     {
-        eventQueue.Enqueue(e);
-    }
-
-    public void addEvent(string eventName, int level = 0)
-    {
-        TelemetryEvent e;
-        e.time = DateTime.UtcNow;
+        singleEvent e;
+        e.eventName = eventName;
         e.nivel = level;
-
-        switch (eventName){
-            case "InicioSesion":
-                e.type = TipoEvento.InicioSesion;
-                break;
-            case "InicioNivel":
-                e.type = TipoEvento.InicioNivel;
-                break;
-            case "FinSesion":
-                e.type = TipoEvento.FinSesion;
-                break;
-            case "FinNivel":
-                e.type = TipoEvento.FinNivel;
-                break;
-            case "AbandonoNivel":
-                e.type = TipoEvento.AbandonoNivel;
-                break;
-            case "Reinicio":
-                e.type = TipoEvento.Reinicio;
-                break;
-            case "Pausa":
-                e.type = TipoEvento.Pausa;
-                break;
-            case "Coleccionable":
-                e.type = TipoEvento.Coleccionable;
-                break;
-            case "FotoRecogida":
-                e.type = TipoEvento.FotoRecogida;
-                break;
-            case "FlashRecogida":
-                e.type = TipoEvento.FlashRecogida;
-                break;
-            case "BotonCamara":
-                e.type = TipoEvento.BotonCamara;
-                break;
-            case "FotoUso":
-                e.type = TipoEvento.FotoUso;
-                break;
-            case "FlashUso":
-                e.type = TipoEvento.FlashUso;
-                break;
-            case "FotoGuardia":
-                e.type = TipoEvento.FotoGuardia;
-                break;
-            default:
-                e.type = TipoEvento.Null;
-                break;
-        }
-
-        eventQueue.Enqueue(e);
-    }
-
-    public void addEvent(TipoEvento eventType)
-    {
-        TelemetryEvent e;
         e.time = DateTime.UtcNow;
-        e.type = eventType;
-        e.nivel = 0;
-        eventQueue.Enqueue(e);
+
+        // ENVIAR AL PROCESADOR
     }
 
-    public void addEvent(TipoEvento eventType, int level)
+    public void valueEvent(string eventName, int value, int level)
     {
-        TelemetryEvent e;
+        valueEvent e;
+        e.eventName = eventName;
+        e.nivel = level;
         e.time = DateTime.UtcNow;
-        e.type = eventType;
-        e.nivel = level;
-        eventQueue.Enqueue(e);
+        e.value = value;
+
+        // ENVIAR AL PROCESADOR
     }
 
-    public void addEvent(TipoEvento eventType, int level, DateTime timestamp)
+    public void postitionEvent(string eventName, float x, float y, int level)
     {
-        TelemetryEvent e;
-        e.time = timestamp;
-        e.type = eventType;
+        positionEvent e;
+        e.eventName = eventName;
+        e.x = x;
+        e.y = y;
         e.nivel = level;
-        eventQueue.Enqueue(e);
+        e.time = DateTime.UtcNow;
+
+        // ENVIAR AL PROCESADOR
     }
+
+    public void levelEvent(string eventName, int level = 0)
+    {
+        levelEvent e;
+        e.eventName = eventName;
+        e.nivel = level;
+        e.time = DateTime.UtcNow;
+
+        // ENVIAR AL PROCESADOR
+    }
+
+
     #endregion
 }
