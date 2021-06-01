@@ -51,4 +51,9 @@ public class Cronometro : MonoBehaviour {
     {
         tiempoGuardado = nuevo;
     }
+
+    public float devuelveTiempoGuardado ()
+    {
+        return tiempoGuardado;
+    }
 }

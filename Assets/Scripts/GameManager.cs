@@ -743,4 +743,9 @@ public class GameManager : MonoBehaviour {
     {
         return puedeFlash;
     }
+
+    public float tiempoMinijuego()
+    {
+        return GameObject.FindWithTag("Crono").GetComponent<Cronometro>().devuelveTiempoGuardado();
+    }
 }
