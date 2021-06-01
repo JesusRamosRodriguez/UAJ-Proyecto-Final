@@ -91,6 +91,7 @@ public class Mecanica : MonoBehaviour {
             }
             else
             {
+                TelemetrySystem.Instance.singleEvent("FalloMinijuego", GameManager.instance.getLevelNumber());
                 failSonido.Play();  //Fallo
             }
 

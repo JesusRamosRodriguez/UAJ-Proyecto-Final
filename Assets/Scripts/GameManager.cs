@@ -466,6 +466,9 @@ public class GameManager : MonoBehaviour {
 
                 if (nivel1.PuntuacionTotal() > nivel1.puntuacionMaxima)
                     nivel1.puntuacionMaxima = nivel1.PuntuacionTotal();
+
+                TelemetrySystem.Instance.valueEvent("PuntuacionNivel", nivel1.PuntuacionTotal(), 1);
+                TelemetrySystem.Instance.levelEvent("FinNivel", 1);
                 SceneManager.LoadScene("N1Puntuacion1");
                 nivel1.terminado = true;
 			break;
@@ -475,6 +478,9 @@ public class GameManager : MonoBehaviour {
                
                 if (nivel2.PuntuacionTotal() > nivel2.puntuacionMaxima)
                     nivel2.puntuacionMaxima = nivel2.PuntuacionTotal();
+
+                TelemetrySystem.Instance.valueEvent("PuntuacionNivel", nivel2.PuntuacionTotal(), 2);
+                TelemetrySystem.Instance.levelEvent("FinNivel", 2);
                 SceneManager.LoadScene("N2Puntuacion2");
                 nivel2.terminado = true;
                 break;
@@ -484,6 +490,9 @@ public class GameManager : MonoBehaviour {
                 
                 if (nivel3.PuntuacionTotal() > nivel3.puntuacionMaxima)
                     nivel3.puntuacionMaxima = nivel3.PuntuacionTotal();
+
+                TelemetrySystem.Instance.valueEvent("PuntuacionNivel", nivel3.PuntuacionTotal(), 3);
+                TelemetrySystem.Instance.levelEvent("FinNivel", 3);
                 SceneManager.LoadScene("N3Puntuacion3");
                 nivel3.terminado = true;
                 break;
@@ -563,7 +572,6 @@ public class GameManager : MonoBehaviour {
 
     public void Continua()
     {
-        if(getLevelNumber() > 0 && getLevelNumber() < 4) telemetria.levelEvent("FinNivel", getLevelNumber());
         if (actual == "N3Puntuacion3")
         {
             SceneManager.LoadScene("Cinematica2");
