@@ -37,7 +37,7 @@ public class Cronometro : MonoBehaviour {
 
     public float FinPartida()
     {
-        TelemetrySystem.Instance.valueEvent("TiempoFinalNivel ", (int)tiempo, GameManager.instance.getLevelNumber());
+        TelemetrySystem.Instance.valueEvent("TiempoFinalNivel", (int)tiempo, GameManager.instance.getLevelNumber());
         fin = true;
         crono.color = Color.yellow;
         return tiempo;

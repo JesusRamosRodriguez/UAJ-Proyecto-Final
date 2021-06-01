@@ -9,7 +9,6 @@ public class FinPartida : MonoBehaviour {
     {
         if (col.gameObject.tag == "Player" && GameManager.instance.MinijuegoTerminado())
         {
-
             GameManager.instance.GoToPuntuacion();
         }
     }
