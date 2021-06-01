@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-// Eventos que solo pasan el propio evento como información
+/// Eventos que solo pasan el propio evento como información
 public struct singleEvent
 {
     public string eventName;
@@ -12,7 +12,7 @@ public struct singleEvent
     public int nivel;
 }
 
-// Eventos que pasan un valor numérico como información
+/// Eventos que pasan un valor numérico como información
 public struct valueEvent
 {
     public string eventName;
@@ -22,7 +22,7 @@ public struct valueEvent
     public int value;
 }
 
-// Eventos que pasan una coordenada como información
+/// Eventos que pasan una coordenada como información
 public struct positionEvent
 {
     public string eventName;
@@ -33,7 +33,7 @@ public struct positionEvent
     public float y;
 }
 
-// Eventos de inicio, reinicio y fin de nivel
+/// Eventos de inicio, reinicio y fin de nivel
 public struct levelEvent
 {
     public string eventName;
@@ -50,10 +50,6 @@ public class TelemetrySystem{
 
     private TelemetrySystem()
     {
-        DateTime act = DateTime.UtcNow;
-        machineID = SystemInfo.deviceUniqueIdentifier;
-        sessionID = machineID + act.Hour.ToString() + act.Minute.ToString() + act.Second.ToString() + act.Day.ToString() + act.Month.ToString() + act.Year.ToString();
-
         timeElapsed = 0.0f;
         saveFrequency = 30000; // DEFAULT: Actualizamos datos cada 30 segundos
 
@@ -62,7 +58,7 @@ public class TelemetrySystem{
         //eventQueue = new Queue<TelemetryEvent>();
 
         persistence = new PersistenceSystem();
-        persistence.Init(machineID, sessionID);
+        persistence.Init();
     }
 
     public static TelemetrySystem Instance
@@ -84,10 +80,6 @@ public class TelemetrySystem{
     // Frecuencia de guardado
     private float saveFrequency; // La frecuencia en ms con la que el sistema serializa y graba
     internal float timeElapsed; // Tiempo transcurrido desde última actualización
-
-    // IDs de sesión y máquina
-    private readonly string sessionID;
-    private readonly string machineID;
 
     // Hilo para serialización y guardado
     Thread telemetryThread;
