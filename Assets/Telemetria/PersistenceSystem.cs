@@ -52,7 +52,9 @@ public class PersistenceSystem
 {
     const uint sizeX = 100;
     const uint sizeY = 100;
+    const float heatMapIncrease = 0.01f;
 
+    uint currentLevel = 1;
     #region DataManagement
 
     //  Const data (total)
@@ -77,28 +79,29 @@ public class PersistenceSystem
     //  Raw level data
     struct levelData
     {
-        uint numeroNivel;
+        public uint numeroNivel;
 
-        uint fotos;
-        uint flashes;
-        uint fotosAGuardias;
-        uint coleccionablesRecogidos;
-        uint camarasDesactivadas;
-        uint flashesRecogidos;
-        uint fallosMinijuego;
-        uint muertes; // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
-        uint muertesPorGuardiaDormido; // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
-        uint tiempoPartida;
-        uint tiempoEnEncontrarObjetivo;
-        uint puntuacionFinal;
+        public uint fotos;
+        public uint flashes;
+        public uint fotosAGuardias;
+        public uint coleccionablesRecogidos;
+        public uint camarasDesactivadas;
+        public uint flashesRecogidos;
+        public uint fotosRecogidas;
+        public uint fallosMinijuego;
+        public uint muertes; // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
+        public uint muertesPorGuardiaDormido; // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
+        public int tiempoPartida;
+        public int tiempoEnEncontrarObjetivo;
+        public int puntuacionFinal;
 
-        float[,] posicionesJugador;
-        float[,] posicionesGuardias;
-        float[,] muertesJugador;  // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
+        public float[,] posicionesJugador;
+        public float[,] posicionesGuardias;
+        public float[,] muertesJugador;  // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
 
-        Dictionary<uint, uint> coleccionables;  // id coleccionable -> veces recogido
+        public Stack<int> coleccionables;  // id coleccionable recogido
 
-        private void Reset(uint level, bool flag = false) // True si queremos resetear TODO
+        public void Reset(uint level, bool flag = false) // True si queremos resetear TODO
         {
             numeroNivel = level;
             fotos = 0;
@@ -107,10 +110,13 @@ public class PersistenceSystem
             coleccionablesRecogidos = 0;
             camarasDesactivadas = 0;
             flashesRecogidos = 0;
+            fotosRecogidas = 0;
             fallosMinijuego = 0;
             tiempoPartida = 0;
             tiempoEnEncontrarObjetivo = 0;
             puntuacionFinal = 0;
+
+            coleccionables = new Stack<int>();
 
             posicionesJugador = new float[posicionesJugador.GetLength(0), posicionesJugador.GetLength(1)];
             posicionesGuardias = new float[posicionesGuardias.GetLength(0), posicionesGuardias.GetLength(1)];
@@ -164,9 +170,10 @@ public class PersistenceSystem
         //  Set up status
         levelDatas = new levelData[3];
 
-        for (int i = 0; i < 3; i++)
+        for (uint i = 0; i < 3; i++)
         {
-
+            levelDatas[i] = new levelData();
+            levelDatas[i].Reset(i+1,true);
         }
 
         //  Set up file
@@ -187,35 +194,77 @@ public class PersistenceSystem
     //  Receive the events and store the data on the memory structures
     public bool SendEvent (singleEvent e)
     {
+        bool failed = false;
         switch (e.eventName)
         {
-            case "FotoUsada":               
+            case "FotoUsada":
+                levelDatas[currentLevel - 1].fotos++;
                 break;
             case "FlashUsado":
+                levelDatas[currentLevel - 1].flashes++;
                 break;
             case "FotoGuardia":
-                break;
-            case "Coleccionable":
+                levelDatas[currentLevel - 1].fotosAGuardias++;
                 break;
             case "FlashRecogido":
+                levelDatas[currentLevel - 1].flashesRecogidos++;
                 break;
             case "FotoRecogida":
+                levelDatas[currentLevel - 1].fotosRecogidas++;
                 break;
             case "Muerte":
+                levelDatas[currentLevel - 1].muertes++;
                 break;
             default:
+                failed = true;
+                Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'singleEvent' no reconocible. Id del evento: " + e.eventName);
                 break;
         }
-        return true;
+        return !failed;
     }
     public bool SendEvent(valueEvent e)
     {
-        return true;
+        bool failed = false;
+        switch (e.eventName)
+        {
+            case "TiempoFinalNivel":
+                levelDatas[currentLevel - 1].tiempoPartida = e.value;
+                break;
+            case "TiempoFamosoObjetivo":
+                levelDatas[currentLevel - 1].tiempoEnEncontrarObjetivo = e.value;
+                break;
+            case "ColeccionableConcreto":
+                levelDatas[currentLevel - 1].coleccionablesRecogidos++;
+                levelDatas[currentLevel - 1].coleccionables.Push(e.value);
+                break;
+            case "PuntuacionNivel":
+                levelDatas[currentLevel - 1].puntuacionFinal = e.value;
+                break;
+            default:
+                failed = true;
+                Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'valueEvent' no reconocible. Id del evento: " + e.eventName);
+                break;
+        }
+        return !failed;
     }
 
     public bool SendEvent(positionEvent e)
     {
-        return true;
+        bool failed = false;
+        switch (e.eventName)
+        {
+            case "PlayerPosition":
+                levelDatas[currentLevel - 1].posicionesJugador[Mathf.RoundToInt(e.x), Mathf.RoundToInt(e.y)] += heatMapIncrease;
+                break;
+            case "GuardiaPosition":
+                levelDatas[currentLevel - 1].posicionesGuardias[Mathf.RoundToInt(e.x), Mathf.RoundToInt(e.y)] += heatMapIncrease;
+                break;
+            default:
+                failed = true;
+                Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
+                break;
+        }
+        return !failed;
     }
 
     public bool SendEvent(levelEvent e)
