@@ -26,14 +26,16 @@ public class Boton : MonoBehaviour {
                 fuenteAudio.Play();
                 DesactivaBoton();
 				activado = true;
-			}
+                TelemetrySystem.Instance.singleEvent("CamaraDesactivada", GameManager.instance.getLevelNumber());
+            }
 			else if (activado) // si el boton esta desactivado llama a activa
 			{
 				ActivaBoton();
 				activado = false;
 				//sonido
 				fuenteAudio.Play();
-			}
+                TelemetrySystem.Instance.singleEvent("CamaraActivada", GameManager.instance.getLevelNumber());
+            }
 		}
       
     }

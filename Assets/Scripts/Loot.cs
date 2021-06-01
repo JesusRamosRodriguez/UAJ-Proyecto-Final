@@ -14,7 +14,7 @@ public class Loot : MonoBehaviour
             GameManager.instance.loot++;
 			GameManager.instance.SumaPuntos (ptosLoot, "loot");
             Destroy(this.gameObject);
-            TelemetrySystem.Instance.singleEvent("Coleccionable", GameManager.instance.getLevelNumber());
+            TelemetrySystem.Instance.valueEvent("ColeccionableConcreto", this.gameObject.GetInstanceID(), GameManager.instance.getLevelNumber());
         }
     }
 }

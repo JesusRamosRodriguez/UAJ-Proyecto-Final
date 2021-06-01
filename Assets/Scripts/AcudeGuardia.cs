@@ -14,6 +14,9 @@ public class AcudeGuardia : MonoBehaviour {
     private void Update()
     {
         if (camara.LeVeo() == true)
-            go.GetComponent<Patrol>().AcudeACamara(transform);
+        {
+            Debug.Log("llama guardia");
+            TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
+        }
     }
 }

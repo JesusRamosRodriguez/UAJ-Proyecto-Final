@@ -7,7 +7,8 @@ public class CargaMinijuego : MonoBehaviour {
 		{
             if (col.gameObject.tag == "Player"&& !GameManager.instance.MinijuegoTerminado())
             {
-            
+
+            TelemetrySystem.Instance.valueEvent("GuardiaDetectaJugador",  (int)GameManager.instance.tiempoMinijuego(), GameManager.instance.getLevelNumber());
 
             GameManager.instance.GoToMiniJuego();
             }
