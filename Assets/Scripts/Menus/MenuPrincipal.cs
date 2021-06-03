@@ -10,6 +10,7 @@ public class MenuPrincipal : MonoBehaviour
     {
         GameManager.instance.NuevaPartida();
         GameManager.instance.Nivel1();
+        TelemetrySystem.Instance.levelEvent("InicioNivel", 1);
         
     }
 

@@ -26,7 +26,6 @@ public struct processedLevelData
     #region IA Enemiga
     float promedioDetecciones;
     float[,] guardsHeatMap;
-    float promedioMuertesDormidos; // Muertes causadas por guardias que dormían
     float promedioGuardiasFlasheados;
     #endregion
 
@@ -124,7 +123,6 @@ public class PersistenceSystem
             if (flag)
             {
                 muertes = 0;
-                muertesPorGuardiaDormido = 0;
                 muertesJugador = new float[muertesJugador.GetLength(0), muertesJugador.GetLength(1)];
             }
         }
