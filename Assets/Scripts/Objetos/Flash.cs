@@ -103,8 +103,10 @@ public class Flash : MonoBehaviour
 			if(Input.GetKeyUp(KeyCode.Mouse0) && GameManager.instance.bombillas > 0)
             {
                 Invisible();
-                if (ConoFlash.GetComponent<Raycast>().LeVeo() && ConoFlash.GetComponent<Raycast>().Frente())//Si esta de frente y dentro llama a stunn
+                if (ConoFlash.GetComponent<Raycast>().LeVeo() && ConoFlash.GetComponent<Raycast>().Frente()) {//Si esta de frente y dentro llama a stunn
+                    TelemetrySystem.Instance.singleEvent("FlashGuardia", GameManager.instance.getLevelNumber());
                     ConoFlash.GetComponent<Raycast>().Stunn();
+                }
 
                 TelemetrySystem.Instance.singleEvent("FlashUsado", GameManager.instance.getLevelNumber());
                 GameManager.instance.bombillas--;
