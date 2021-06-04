@@ -157,7 +157,7 @@ public class TelemetrySystem{
         e.nivel = level;
         e.time = DateTime.UtcNow;
 
-        // ENVIAR AL PROCESADOR
+        persistence.SendEvent(e);
     }
 
     public void valueEvent(string eventName, int value, int level)
@@ -168,7 +168,7 @@ public class TelemetrySystem{
         e.time = DateTime.UtcNow;
         e.value = value;
 
-        // ENVIAR AL PROCESADOR
+        persistence.SendEvent(e);
     }
 
     public void positionEvent(string eventName, float x, float y, int level)
@@ -180,7 +180,7 @@ public class TelemetrySystem{
         e.nivel = level;
         e.time = DateTime.UtcNow;
 
-        // ENVIAR AL PROCESADOR
+        persistence.SendEvent(e);
     }
 
     public void levelEvent(string eventName, int level = 0)
@@ -190,7 +190,7 @@ public class TelemetrySystem{
         e.nivel = level;
         e.time = DateTime.UtcNow;
 
-        // ENVIAR AL PROCESADOR
+        persistence.SendEvent(e);
     }
 
 

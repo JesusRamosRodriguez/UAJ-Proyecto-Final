@@ -13,7 +13,7 @@ public class mouseInput : MonoBehaviour {
 	void Update () {
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
         {
-            TelemetrySystem.Instance.singleEvent("ClickCinematica", -1);
+            TelemetrySystem.Instance.singleEvent("ClickCinematica", 0);
 
         }
 
