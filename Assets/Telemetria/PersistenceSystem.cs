@@ -4,6 +4,12 @@ using UnityEngine;
 using System.IO;
 
 #region STRUCTS
+
+public struct graphicsData
+{
+    public uint valueX;
+    public uint valueY;
+}
 public struct processedLevelData
 {
     public uint levelNumber;
@@ -13,6 +19,7 @@ public struct processedLevelData
     public float[,] mapaCalorMuertes;
     public float promedioMuertes;
     public uint porcentajeFlashes;
+    public List<graphicsData> graficaFlashesMuertes;
     #endregion
 
     #region Sistema puntuacion
@@ -20,6 +27,8 @@ public struct processedLevelData
     public uint porcentajeColeccionables; // Porcentaje promedio de coleccionables totales que recogen
     public Dictionary<int, uint> porcentajeColeccionablesConcretos;
     public float promedioTiempoNivel;
+    public List<graphicsData> graficaPuntuacionTiempo;
+    public List<graphicsData> graficaColeccionablesPuntuacion;
     #endregion
 
     #region IA Enemiga
@@ -366,6 +375,8 @@ public class PersistenceSystem
         uint accumulatedSamples = processedLevelDatas[currentIndex].totalSamples;
         float acumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
 
+        graphicsData zero; zero.valueX = 0; zero.valueY = 0;
+
         #region Dificultad y equilibrado
         // Promedio muertes
         processedLevelDatas[currentIndex].promedioMuertes = (processedLevelDatas[currentIndex].promedioMuertes * acumulatedDataWeight) + 
@@ -373,9 +384,23 @@ public class PersistenceSystem
 
         // Porcentaje flashes gastados
         processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
-            levelConsts[currentIndex].tFlashes, acumulatedDataWeight);
+            (levelConsts[currentIndex].tFlashes + 3), acumulatedDataWeight);
 
         // TODO: ACUMULAR MAPA CALOR MUERTE
+
+        // Gráfica Flashes-Muertes
+        graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
+        if (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaFlashesMuertes.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
+        }
+        else
+        {
+            processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
+            while (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+        }
+        
         #endregion
 
         #region Sistema puntuacion
@@ -401,6 +426,33 @@ public class PersistenceSystem
         // Promedio tiempo nivel
         processedLevelDatas[currentIndex].promedioTiempoNivel = (processedLevelDatas[currentIndex].promedioTiempoNivel * acumulatedDataWeight) +
             (levelDatas[currentIndex].tiempoPartida * (1.0f - acumulatedDataWeight));
+
+        // Gráfica Puntuacion-Tiempo
+        graphicsData puntuacionTiempo; puntuacionTiempo.valueX = (uint)levelDatas[currentIndex].puntuacionFinal; puntuacionTiempo.valueY = levelDatas[currentIndex].tiempoPartida;
+        if (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+        }
+        else
+        {
+            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+            while (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+        }
+
+        // Gráfica Coleccionables-Puntuacion
+        graphicsData coleccPuntuacion; coleccPuntuacion.valueX = levelDatas[currentIndex].coleccionablesRecogidos; coleccPuntuacion.valueY = (uint)levelDatas[currentIndex].puntuacionFinal;
+        if (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+        }
+        else
+        {
+            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+            while (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+        }
+
         #endregion
 
         #region IA Enemiga
