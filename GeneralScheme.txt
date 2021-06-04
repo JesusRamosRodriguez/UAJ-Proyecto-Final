@@ -1,0 +1,18 @@
+Lvl x
+(just in lvl 1) promedioClicksEnCinematica:x
+totalSamples:x
+promedioMuertes:x
+porcentajeFlashes:x
+promedioPuntuacion:x
+porcentajeColeccionables:x
+promedioTiempoNivel:x
+promedioDetecciones:x
+promedioGuardiasFlasheados:x
+porcentajeCamarasDesactivadas:x
+promedioDeteccionCamaras:x
+porcentajeCarretesRecogidos:x
+porcentajeFlashesRecogidos:x
+promedioTiempoEnHallarObjetivo:x
+promedioFotosContraGuardias:x
+promedioFallosMinijuego:x
+porcentajeColeccionablesConcretos: 0-1 1-30 2-60 3-85

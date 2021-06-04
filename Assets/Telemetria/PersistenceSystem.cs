@@ -168,6 +168,25 @@ public class PersistenceSystem
     levelData[] levelDatas;                     //  Array de estructuras de datos especificos de cada nivel
     processedLevelData[] processedLevelDatas;   //  Array de datos procesados de todas las partidas previas
 
+    private void initLevelConsts()
+    {
+        level1consts.tCarretes = 1;
+        level1consts.tFlashes = 1;
+        level1consts.tCamaras = 1;
+        level1consts.tColeccionables = 1;
+
+        level2consts.tCarretes = 1;
+        level2consts.tFlashes = 1;
+        level2consts.tCamaras = 1;
+        level2consts.tColeccionables = 1;
+
+        level3consts.tCarretes = 1;
+        level3consts.tFlashes = 1;
+        level3consts.tCamaras = 1;
+        level3consts.tColeccionables = 1;
+
+        levelConsts = new constLevelData[] { level1consts, level2consts, level3consts };
+    }
     #endregion
 
     #region FileManager (Opening and closing I/O)
@@ -192,22 +211,23 @@ public class PersistenceSystem
             fs = new FileStream(FILEGENERAL, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             sw = new StreamWriter(fs);
             sr = new StreamReader(fs);
-            return true;
         }
         catch (System.Exception e)
         {
             Debug.LogError(e.Message);
             return false;
         }
-
+        return true;
     }
 
     public bool Init () //  initializes the system by opening the filestream of the file of the current session and loading the general file if it exists
     {
-        //  Set up status
+        //  Set up file
+        if (!OpenFile()) return false;
+
+        //  initializes memory structures
         levelDatas = new levelData[3];
         processedLevelDatas = new processedLevelData[3];
-
         for (uint i = 0; i < 3; i++)
         {
             levelDatas[i] = new levelData();
@@ -220,31 +240,7 @@ public class PersistenceSystem
         // Level constants
         initLevelConsts();
 
-        //  Set up file
-        if (OpenFile())
-            return true;
-
-        return false;
-    }
-
-    private void initLevelConsts()
-    {
-        level1consts.tCarretes = 0;
-        level1consts.tFlashes = 0;
-        level1consts.tCamaras = 0;
-        level1consts.tColeccionables = 0;
-
-        level2consts.tCarretes = 0;
-        level2consts.tFlashes = 0;
-        level2consts.tCamaras = 0;
-        level2consts.tColeccionables = 0;
-
-        level3consts.tCarretes = 0;
-        level3consts.tFlashes = 0;
-        level3consts.tCamaras = 0;
-        level3consts.tColeccionables = 0;
-
-        levelConsts = new constLevelData[] { level1consts, level2consts, level3consts };
+        return true;
     }
 
     public bool ShutDown()  //  Shuts down the system
@@ -258,7 +254,6 @@ public class PersistenceSystem
     //  Receive the events and store the data on the memory structures
     public bool SendEvent (singleEvent e)
     {
-        bool failed = false;
         switch (e.eventName)
         {
             case "FotoUsada":
@@ -292,15 +287,13 @@ public class PersistenceSystem
                 clicksEnCinematica++;
                 break;
             default:
-                failed = true;
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'singleEvent' no reconocible. Id del evento: " + e.eventName);
-                break;
+                return false;
         }
-        return !failed;
+        return true;
     }
     public bool SendEvent(valueEvent e)
     {
-        bool failed = false;
         switch (e.eventName)
         {
             case "TiempoFinalNivel":
@@ -317,16 +310,14 @@ public class PersistenceSystem
                 levelDatas[currentLevel - 1].puntuacionFinal = e.value;
                 break;
             default:
-                failed = true;
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'valueEvent' no reconocible. Id del evento: " + e.eventName);
-                break;
+                return false;
         }
-        return !failed;
+        return true;
     }
 
     public bool SendEvent(positionEvent e)
     {
-        bool failed = false;
         switch (e.eventName)
         {
             case "PlayerPosition":
@@ -335,172 +326,185 @@ public class PersistenceSystem
             case "GuardiaPosition":
                 levelDatas[currentLevel - 1].posicionesGuardias[Mathf.RoundToInt(e.x), Mathf.RoundToInt(e.y)] += heatMapIncrease;
                 break;
-            default:
-                failed = true;
+            default:            
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
-                break;
+                return false;
         }
-        return !failed;
+        return true;
     }
 
     public bool SendEvent(levelEvent e)
     {
-        bool failed = false;
         switch (e.eventName)
         {
             case "InicioNivel":
                 currentLevel = e.nivel;
                 break;
             case "FinNivel":
+                if (ProcessCurrentLevel()) if (Encode()) return true;
                 break;
             case "Reinicio":
+                levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY, true);
                 break;
             case "AbandonoNivel":
+                levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY);
+                break;
+            case "InicioSesion":
+                break;
+            case "FinSesion":
                 break;
             default:
-                failed = true;
-                Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
-                break;
+                Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'levelEvent' no reconocible. Id del evento: " + e.eventName);
+                return false;
         }
-        return !failed;
+        return true;
     }
     #endregion
 
     #region Processer
-    private bool ProcessCurrentLevel ()
+    private bool ProcessCurrentLevel()
     {
-        int currentIndex = currentLevel - 1;
 
-        processedLevelDatas[currentIndex].totalSamples += 1;
-        uint accumulatedSamples = processedLevelDatas[currentIndex].totalSamples;
-        float acumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
+        try
+        { 
+            int currentIndex = currentLevel - 1;
 
-        graphicsData zero; zero.valueX = 0; zero.valueY = 0;
+            processedLevelDatas[currentIndex].totalSamples += 1;
+            uint accumulatedSamples = processedLevelDatas[currentIndex].totalSamples;
+            float acumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
 
-        #region Dificultad y equilibrado
-        // Promedio muertes
-        processedLevelDatas[currentIndex].promedioMuertes = (processedLevelDatas[currentIndex].promedioMuertes * acumulatedDataWeight) + 
-            (levelDatas[currentIndex].muertes * (1.0f - acumulatedDataWeight));
+            graphicsData zero; zero.valueX = 0; zero.valueY = 0;
 
-        // Porcentaje flashes gastados
-        processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
-            (levelConsts[currentIndex].tFlashes + 3), acumulatedDataWeight);
+            #region Dificultad y equilibrado
+            // Promedio muertes
+            processedLevelDatas[currentIndex].promedioMuertes = (processedLevelDatas[currentIndex].promedioMuertes * acumulatedDataWeight) +
+                (levelDatas[currentIndex].muertes * (1.0f - acumulatedDataWeight));
 
-        // TODO: ACUMULAR MAPA CALOR MUERTE
+            // Porcentaje flashes gastados
+            processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
+                (levelConsts[currentIndex].tFlashes + 3), acumulatedDataWeight);
 
-        // Gráfica Flashes-Muertes
-        graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
-        if (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count > 10)
-        {
-            processedLevelDatas[currentIndex].graficaFlashesMuertes.RemoveAt(0);
-            processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
-        }
-        else
-        {
-            processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
-            while (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-        }
-        
-        #endregion
+            // TODO: ACUMULAR MAPA CALOR MUERTE
 
-        #region Sistema puntuacion
-        // Promedio puntuacion
-        processedLevelDatas[currentIndex].promedioPuntuacion = (processedLevelDatas[currentIndex].promedioPuntuacion * acumulatedDataWeight) +
-            (levelDatas[currentIndex].puntuacionFinal * (1.0f - acumulatedDataWeight));
-
-        // Porcentaje coleccionables
-        processedLevelDatas[currentIndex].porcentajeColeccionables = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeColeccionables,
-            levelDatas[currentIndex].coleccionablesRecogidos, levelConsts[currentIndex].tColeccionables, acumulatedDataWeight);
-
-        // Porcentaje coleccionables concretos
-        foreach (int id in levelDatas[currentIndex].coleccionables)
-        {
-            uint storedValue;
-            if (processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.TryGetValue(id, out storedValue))
+            // Gráfica Flashes-Muertes
+            graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
+            if (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count > 10)
             {
-                uint newPercentage = (storedValue * accumulatedSamples) / (accumulatedSamples - 1);
+                processedLevelDatas[currentIndex].graficaFlashesMuertes.RemoveAt(0);
+                processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
             }
-            else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)( 1 / accumulatedSamples));
+            else
+            {
+                processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
+                while (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+            }
+
+            #endregion
+
+            #region Sistema puntuacion
+            // Promedio puntuacion
+            processedLevelDatas[currentIndex].promedioPuntuacion = (processedLevelDatas[currentIndex].promedioPuntuacion * acumulatedDataWeight) +
+                (levelDatas[currentIndex].puntuacionFinal * (1.0f - acumulatedDataWeight));
+
+            // Porcentaje coleccionables
+            processedLevelDatas[currentIndex].porcentajeColeccionables = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeColeccionables,
+                levelDatas[currentIndex].coleccionablesRecogidos, levelConsts[currentIndex].tColeccionables, acumulatedDataWeight);
+
+            // Porcentaje coleccionables concretos
+            foreach (int id in levelDatas[currentIndex].coleccionables)
+            {
+                uint storedValue;
+                if (processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.TryGetValue(id, out storedValue))
+                {
+                    uint newPercentage = (storedValue * accumulatedSamples) / (accumulatedSamples - 1);
+                }
+                else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)(1 / accumulatedSamples));
+            }
+
+            // Promedio tiempo nivel
+            processedLevelDatas[currentIndex].promedioTiempoNivel = (processedLevelDatas[currentIndex].promedioTiempoNivel * acumulatedDataWeight) +
+                (levelDatas[currentIndex].tiempoPartida * (1.0f - acumulatedDataWeight));
+
+            // Gráfica Puntuacion-Tiempo
+            graphicsData puntuacionTiempo; puntuacionTiempo.valueX = (uint)levelDatas[currentIndex].puntuacionFinal; puntuacionTiempo.valueY = levelDatas[currentIndex].tiempoPartida;
+            if (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count > 10)
+            {
+                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.RemoveAt(0);
+                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+            }
+            else
+            {
+                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+                while (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+            }
+
+            // Gráfica Coleccionables-Puntuacion
+            graphicsData coleccPuntuacion; coleccPuntuacion.valueX = levelDatas[currentIndex].coleccionablesRecogidos; coleccPuntuacion.valueY = (uint)levelDatas[currentIndex].puntuacionFinal;
+            if (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count > 10)
+            {
+                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.RemoveAt(0);
+                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+            }
+            else
+            {
+                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+                while (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
+            }
+
+            #endregion
+
+            #region IA Enemiga
+            // Promedio detecciones
+            processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * acumulatedDataWeight) +
+               (levelDatas[currentIndex].deteccionesGuardia * (1.0f - acumulatedDataWeight));
+
+            // TODO: ACUMULAR MAPA CALOR GUARDIAS
+
+            // Promedio guardias flasheados
+            processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * acumulatedDataWeight) +
+               (levelDatas[currentIndex].flashesAGuardias * (1.0f - acumulatedDataWeight));
+            #endregion
+
+            #region Diseño nivel
+            // TODO: ACUMULAR MAPA DE CALOR DEL NIVEL
+
+            // Porcentaje Camaras desactivadas
+            processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
+                levelDatas[currentIndex].camarasDesactivadas, levelConsts[currentIndex].tCamaras, acumulatedDataWeight);
+
+            // Promedio deteccion camaras
+            processedLevelDatas[currentIndex].promedioDeteccionCamaras = (processedLevelDatas[currentIndex].promedioDeteccionCamaras * acumulatedDataWeight) +
+               (levelDatas[currentIndex].deteccionesCamara * (1.0f - acumulatedDataWeight));
+
+            // Porcentaje carretes recogidos
+            processedLevelDatas[currentIndex].porcentajeCarretesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCarretesRecogidos,
+                levelDatas[currentIndex].fotosRecogidas, levelConsts[currentIndex].tCarretes, acumulatedDataWeight);
+
+            // Porcentaje flashes recogidos
+            processedLevelDatas[currentIndex].porcentajeFlashesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashesRecogidos,
+                levelDatas[currentIndex].flashesRecogidos, levelConsts[currentIndex].tFlashes, acumulatedDataWeight);
+
+            // Promedio tiempo en hallar objetivo
+            processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo = (processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo * acumulatedDataWeight) +
+               (levelDatas[currentIndex].tiempoEnEncontrarObjetivo * (1.0f - acumulatedDataWeight));
+            #endregion
+
+            #region Interfaz y usabilidad
+            // Promedio de fotos contra guardias
+            processedLevelDatas[currentIndex].promedioFotosContraGuardias = (processedLevelDatas[currentIndex].promedioFotosContraGuardias * acumulatedDataWeight) +
+               (levelDatas[currentIndex].fotosAGuardias * (1.0f - acumulatedDataWeight));
+
+            // Promedio Fallos Minijuego
+            processedLevelDatas[currentIndex].promedioFallosMinijuego = (processedLevelDatas[currentIndex].promedioFallosMinijuego * acumulatedDataWeight) +
+               (levelDatas[currentIndex].fallosMinijuego * (1.0f - acumulatedDataWeight));
+            #endregion
         }
-
-        // Promedio tiempo nivel
-        processedLevelDatas[currentIndex].promedioTiempoNivel = (processedLevelDatas[currentIndex].promedioTiempoNivel * acumulatedDataWeight) +
-            (levelDatas[currentIndex].tiempoPartida * (1.0f - acumulatedDataWeight));
-
-        // Gráfica Puntuacion-Tiempo
-        graphicsData puntuacionTiempo; puntuacionTiempo.valueX = (uint)levelDatas[currentIndex].puntuacionFinal; puntuacionTiempo.valueY = levelDatas[currentIndex].tiempoPartida;
-        if (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count > 10)
+        catch (System.Exception e)
         {
-            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.RemoveAt(0);
-            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+            Debug.LogError("Fail processing current level!  Details: ");
+            Debug.LogError(e.Message);
+            return false;
         }
-        else
-        {
-            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
-            while (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-        }
-
-        // Gráfica Coleccionables-Puntuacion
-        graphicsData coleccPuntuacion; coleccPuntuacion.valueX = levelDatas[currentIndex].coleccionablesRecogidos; coleccPuntuacion.valueY = (uint)levelDatas[currentIndex].puntuacionFinal;
-        if (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count > 10)
-        {
-            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.RemoveAt(0);
-            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
-        }
-        else
-        {
-            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
-            while (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-        }
-
-        #endregion
-
-        #region IA Enemiga
-        // Promedio detecciones
-        processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * acumulatedDataWeight) +
-           (levelDatas[currentIndex].deteccionesGuardia * (1.0f - acumulatedDataWeight));
-
-        // TODO: ACUMULAR MAPA CALOR GUARDIAS
-
-        // Promedio guardias flasheados
-        processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * acumulatedDataWeight) +
-           (levelDatas[currentIndex].flashesAGuardias * (1.0f - acumulatedDataWeight));
-        #endregion
-
-        #region Diseño nivel
-        // TODO: ACUMULAR MAPA DE CALOR DEL NIVEL
-
-        // Porcentaje Camaras desactivadas
-        processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
-            levelDatas[currentIndex].camarasDesactivadas, levelConsts[currentIndex].tCamaras, acumulatedDataWeight);
-
-        // Promedio deteccion camaras
-        processedLevelDatas[currentIndex].promedioDeteccionCamaras = (processedLevelDatas[currentIndex].promedioDeteccionCamaras * acumulatedDataWeight) +
-           (levelDatas[currentIndex].deteccionesCamara * (1.0f - acumulatedDataWeight));
-
-        // Porcentaje carretes recogidos
-        processedLevelDatas[currentIndex].porcentajeCarretesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCarretesRecogidos,
-            levelDatas[currentIndex].fotosRecogidas, levelConsts[currentIndex].tCarretes, acumulatedDataWeight);
-
-        // Porcentaje flashes recogidos
-        processedLevelDatas[currentIndex].porcentajeFlashesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashesRecogidos,
-            levelDatas[currentIndex].flashesRecogidos, levelConsts[currentIndex].tFlashes, acumulatedDataWeight);
-
-        // Promedio tiempo en hallar objetivo
-        processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo = (processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo * acumulatedDataWeight) +
-           (levelDatas[currentIndex].tiempoEnEncontrarObjetivo * (1.0f - acumulatedDataWeight));
-        #endregion
-
-        #region Interfaz y usabilidad
-        // Promedio de fotos contra guardias
-        processedLevelDatas[currentIndex].promedioFotosContraGuardias = (processedLevelDatas[currentIndex].promedioFotosContraGuardias * acumulatedDataWeight) +
-           (levelDatas[currentIndex].fotosAGuardias * (1.0f - acumulatedDataWeight));
-
-        // Promedio Fallos Minijuego
-        processedLevelDatas[currentIndex].promedioFallosMinijuego = (processedLevelDatas[currentIndex].promedioFallosMinijuego * acumulatedDataWeight) +
-           (levelDatas[currentIndex].fallosMinijuego * (1.0f - acumulatedDataWeight));
-        #endregion
-
         return true;
     }
 
@@ -514,8 +518,8 @@ public class PersistenceSystem
 
     #region Decoder
 
-    //  Auxiliar readers
-    private uint GetuintFromPos(int pos) { return uint.Parse(sr.ReadLine().Split(':')[pos]); }
+//  Auxiliar readers
+private uint GetuintFromPos(int pos) { return uint.Parse(sr.ReadLine().Split(':')[pos]); }
     private float GetfloatFromPos(int pos) { return float.Parse(sr.ReadLine().Split(':')[pos]); }
     private bool DecodeLevel(uint level)
     {
@@ -523,11 +527,20 @@ public class PersistenceSystem
         
         try
         {
-            //  Ensures that the stream pointer is pointing at the beginning of the file
+            /*//  Ensures that the stream pointer is pointing at the beginning of the file
             sr.DiscardBufferedData();
-            sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
+            sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);*/
             //  Checks if there actually is data for the asked level in the file
+            //if (new FileInfo(FILEPATH).Length == 0)
             s = sr.ReadLine();
+
+            if (s == null)
+            {
+                Debug.Log("First TelemetrySystem execution! End at least 1 level to output data...");
+                return false;
+            }
+
+
             while (s != "Lvl " + level) s = sr.ReadLine();
             if (sr.EndOfStream) return false;
 
@@ -560,13 +573,12 @@ public class PersistenceSystem
                 subs2 = subs[i].Split('-');     // id1 / %
                 processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
             }
-
-
         }
         catch  (System.Exception e)
         {
-            Debug.LogError("General telemetry file can't be read. It may be corrupted!  Details: ");
-            Debug.LogError(e.Message);
+            Debug.LogWarning("(Decoder) General telemetry file can't be read. It may be corrupted or this is the first execution :D !  Details: ");
+            Debug.LogWarning(e.Message + " / " + e.Data);
+            return false;
         }
         return true;
     }
@@ -584,16 +596,16 @@ public class PersistenceSystem
     #endregion
 
     #region Encoder
-    private bool EncodeLevel(uint level)
+    private bool Encode()
     {
         try
         {
-            uint lvl = level - 1;
-            // Check wich level are we encoding
-            if(level == 1)
+            uint lvl = 0;
+
+            for (int i = 0; i < 3; i++)   // Rewrites the 3 lvls in general.txt
             {
-                PrintL("Lvl " + level);
-                PrintL("promedioClicksEnCinematica: " + promedioClicksEnCinematica);
+                PrintL("Lvl " + lvl + 1);
+                if (lvl == 0) PrintL("promedioClicksEnCinematica: " + promedioClicksEnCinematica);  // Exclusive of lvl 1 (index 0)
                 PrintL("totalSamples: " + processedLevelDatas[lvl].totalSamples);
                 PrintL("promedioMuertes: " + processedLevelDatas[lvl].promedioMuertes);
                 PrintL("porcentajeFlashes: " + processedLevelDatas[lvl].porcentajeFlashes);
@@ -615,14 +627,13 @@ public class PersistenceSystem
                 {
                     Print(collectable.Key.ToString() + '-' + collectable.Value.ToString() + ' ');
                 }
-                
-
-            }
+            }          
         }
         catch (System.Exception e)
         {
-            Debug.LogError("General telemetry file can't be written.  Details: ");
+            Debug.LogError("(Encoder) General telemetry file can't be written.  Details: ");
             Debug.LogError(e.Message);
+            return false;
         }
         return true;
     }
