@@ -75,6 +75,11 @@ public struct processedLevelData
         promedioTiempoEnHallarObjetivo = 0.0f;
         promedioFotosContraGuardias = 0.0f;
         promedioFallosMinijuego = 0.0f;
+
+        graficaFlashesMuertes = new List<graphicsData>();
+        graficaPuntuacionTiempo = new List<graphicsData>();
+        graficaColeccionablesPuntuacion = new List<graphicsData>();
+
     }
 
 }
@@ -521,11 +526,18 @@ public class PersistenceSystem
         float oldMinX; float oldMaxX;
         float oldMinY; float oldMaxY;
 
+        float newMinX; float newMaxX;
+        float newMinY; float newMaxY;
+
         switch (currentLevel)
         {
             case 1:
                 oldMinX = -29; oldMaxX = 75;
-                oldMinY = -69; oldMaxY = 34;
+                oldMinY = -69; oldMaxY = 35;
+
+                newMinX = -29; newMaxX = 75;
+                newMinY = -69; newMaxY = 35;
+
                 break;
             case 2:
                 oldMinX = 12; oldMaxX = 87;
