@@ -24,6 +24,7 @@ public class Patrol : MonoBehaviour {
     bool puedeSonar = true;
     public AudioClip detectadoAudio;
 
+
     void Start ()
 	{
 		agent = gameObject.GetComponent<NavMeshAgent>();
@@ -40,8 +41,12 @@ public class Patrol : MonoBehaviour {
 
     void Update()
     {
-        TelemetrySystem.Instance.positionEvent("GuardiaPosition", this.gameObject.transform.position.x,
+        if (TelemetrySystem.Instance.updateFrame())
+        {
+            TelemetrySystem.Instance.positionEvent("GuardiaPosition", this.gameObject.transform.position.x,
             this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
+        }
+            
         // Primero comprueba que sea un guardia y no un famoso el objeto que tiene este script
         if (!this.gameObject.CompareTag("Famoso") && transform.GetChild(0).GetComponent<Detect>().LeVeo()) 
         {

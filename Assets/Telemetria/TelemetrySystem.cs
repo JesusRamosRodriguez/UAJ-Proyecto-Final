@@ -51,8 +51,9 @@ public class TelemetrySystem{
     private TelemetrySystem()
     {
         timeElapsed = 0.0f;
-        saveFrequency = 30000; // DEFAULT: Actualizamos datos cada 30 segundos
+        updateFrequency = 1000 / 30;
 
+        canUpdate = false;
         threadIsStopped = true;
 
         //eventQueue = new Queue<TelemetryEvent>();
@@ -81,6 +82,10 @@ public class TelemetrySystem{
     private float saveFrequency; // La frecuencia en ms con la que el sistema serializa y graba
     internal float timeElapsed; // Tiempo transcurrido desde última actualización
 
+    // Frecuencia de actualización de posiciones
+    private float updateFrequency;
+    private bool canUpdate;
+
     // Hilo para serialización y guardado
     Thread telemetryThread;
     bool threadIsStopped;
@@ -98,14 +103,22 @@ public class TelemetrySystem{
     }
 
     public void Update () {
-        timeElapsed += Time.deltaTime * 1000;
-        //if(timeElapsed > saveFrequency && threadIsStopped)
-        //{
-        //    //telemetryThread = new Thread(SerializeAndSave);
-        //    //telemetryThread.Start();
-        //}
-	}
 
+        if (canUpdate) canUpdate = false;
+
+        timeElapsed += Time.deltaTime * 1000;
+        if (timeElapsed > updateFrequency /*&& threadIsStopped*/)
+        {
+            //telemetryThread = new Thread(SerializeAndSave);
+            //telemetryThread.Start();
+            canUpdate = true;
+            timeElapsed = 0;
+        }
+    }
+
+    public float getUpdateFrequency() { return updateFrequency; }
+
+    public bool updateFrame() { return canUpdate; }
 
     private void SerializeAndSave()
     {

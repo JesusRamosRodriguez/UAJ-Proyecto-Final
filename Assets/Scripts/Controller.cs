@@ -27,16 +27,19 @@ public class Controller : MonoBehaviour {
     }
 
     void Update () {
-        TelemetrySystem.Instance.positionEvent("PlayerPosition", this.gameObject.transform.position.x, 
-            this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
+
+        if(TelemetrySystem.Instance.updateFrame())
+        {
+            TelemetrySystem.Instance.positionEvent("PlayerPosition", this.gameObject.transform.position.x, 
+                this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
+        }
         velocity = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * moveSpeed;//Movimiento
     }
 
     void FixedUpdate() {
 		
 		rb.MovePosition (rb.position + velocity * Time.fixedDeltaTime); //Movimiento
-
-	}
+    }
 
     public bool CompruebaE()//Comprueba si se pulsa la E
     {
