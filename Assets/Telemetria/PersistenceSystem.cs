@@ -480,23 +480,24 @@ public class PersistenceSystem
             if (sr.EndOfStream) return false;
 
             //  Decodes..
-            currentLevel = s[4];                                                                   //  Lvl x
-            if(currentLevel == 1)promedioClicksEnCinematica = GetfloatFromPos(1);                  // (just in lvl 1) promedioClicksEnCinematica: x
-            processedLevelDatas[level-1].totalSamples = GetuintFromPos(1);                         //  totalSamples:x
-            processedLevelDatas[level-1].promedioMuertes = GetfloatFromPos(1);                     //  promedioMuertes:x
-            processedLevelDatas[level-1].porcentajeFlashes = GetuintFromPos(1);                    //  porcentajeFlashes:x
-            processedLevelDatas[level-1].promedioPuntuacion = GetfloatFromPos(1);                  //  promedioPuntuacion:x
-            processedLevelDatas[level-1].porcentajeColeccionables = GetuintFromPos(1);             //  porcentajeColeccionables:x
-            processedLevelDatas[level-1].promedioTiempoNivel = GetuintFromPos(1);                  //  promedioTiempoNivel:x
-            processedLevelDatas[level-1].promedioDetecciones = GetfloatFromPos(1);                 //  promedioDetecciones:x
-            processedLevelDatas[level-1].promedioGuardiasFlasheados = GetfloatFromPos(1);          //  promedioGuardiasFlasheados:x
-            processedLevelDatas[level-1].porcentajeCamarasDesactivadas = GetuintFromPos(1);        //  porcentajeCamarasDesactivadas:x
-            processedLevelDatas[level-1].promedioDeteccionCamaras = GetfloatFromPos(1);            //  promedioDeteccionCamaras:x
-            processedLevelDatas[level-1].porcentajeCarretesRecogidos = GetuintFromPos(1);          //  porcentajeCarretesRecogidos:x
-            processedLevelDatas[level-1].porcentajeFlashesRecogidos = GetuintFromPos(1);           //  porcentajeFlashesRecogidos:x
-            processedLevelDatas[level-1].promedioTiempoEnHallarObjetivo = GetfloatFromPos(1);      //  promedioTiempoEnHallarObjetivo:x
-            processedLevelDatas[level-1].promedioFotosContraGuardias = GetfloatFromPos(1);         //  promedioFotosContraGuardias:x
-            processedLevelDatas[level-1].promedioFallosMinijuego = GetfloatFromPos(1);             //  promedioFallosMinijuego:x
+            uint lvl = level - 1;
+            currentLevel = s[4];                                                               //  Lvl x
+            if(currentLevel == 1)promedioClicksEnCinematica = GetfloatFromPos(1);              // (just in lvl 1) promedioClicksEnCinematica: x
+            processedLevelDatas[lvl].totalSamples = GetuintFromPos(1);                         //  totalSamples:x
+            processedLevelDatas[lvl].promedioMuertes = GetfloatFromPos(1);                     //  promedioMuertes:x
+            processedLevelDatas[lvl].porcentajeFlashes = GetuintFromPos(1);                    //  porcentajeFlashes:x
+            processedLevelDatas[lvl].promedioPuntuacion = GetfloatFromPos(1);                  //  promedioPuntuacion:x
+            processedLevelDatas[lvl].porcentajeColeccionables = GetuintFromPos(1);             //  porcentajeColeccionables:x
+            processedLevelDatas[lvl].promedioTiempoNivel = GetuintFromPos(1);                  //  promedioTiempoNivel:x
+            processedLevelDatas[lvl].promedioDetecciones = GetfloatFromPos(1);                 //  promedioDetecciones:x
+            processedLevelDatas[lvl].promedioGuardiasFlasheados = GetfloatFromPos(1);          //  promedioGuardiasFlasheados:x
+            processedLevelDatas[lvl].porcentajeCamarasDesactivadas = GetuintFromPos(1);        //  porcentajeCamarasDesactivadas:x
+            processedLevelDatas[lvl].promedioDeteccionCamaras = GetfloatFromPos(1);            //  promedioDeteccionCamaras:x
+            processedLevelDatas[lvl].porcentajeCarretesRecogidos = GetuintFromPos(1);          //  porcentajeCarretesRecogidos:x
+            processedLevelDatas[lvl].porcentajeFlashesRecogidos = GetuintFromPos(1);           //  porcentajeFlashesRecogidos:x
+            processedLevelDatas[lvl].promedioTiempoEnHallarObjetivo = GetfloatFromPos(1);      //  promedioTiempoEnHallarObjetivo:x
+            processedLevelDatas[lvl].promedioFotosContraGuardias = GetfloatFromPos(1);         //  promedioFotosContraGuardias:x
+            processedLevelDatas[lvl].promedioFallosMinijuego = GetfloatFromPos(1);             //  promedioFallosMinijuego:x
 
             //  porcentajeColeccionablesConcretos: id1-% id2-% id3-% id4-%
             string[] subs;
@@ -505,7 +506,7 @@ public class PersistenceSystem
             for (int i = 1; i < subs.Length; i++)
             {
                 subs2 = subs[i].Split('-');     // id1 / %
-                processedLevelDatas[level-1].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
+                processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
             }
 
 
@@ -535,14 +536,40 @@ public class PersistenceSystem
     {
         try
         {
+            uint lvl = level - 1;
             // Check wich level are we encoding
             if(level == 1)
-            PrintL("Lvl " + level);
-            PrintL("promedioClicksEnCinematica: " + level);
+            {
+                PrintL("Lvl " + level);
+                PrintL("promedioClicksEnCinematica: " + promedioClicksEnCinematica);
+                PrintL("totalSamples: " + processedLevelDatas[lvl].totalSamples);
+                PrintL("promedioMuertes: " + processedLevelDatas[lvl].promedioMuertes);
+                PrintL("porcentajeFlashes: " + processedLevelDatas[lvl].porcentajeFlashes);
+                PrintL("promedioPuntuacion: " + processedLevelDatas[lvl].promedioPuntuacion);
+                PrintL("porcentajeColeccionables: " + processedLevelDatas[lvl].porcentajeColeccionables);
+                PrintL("promedioTiempoNivel: " + processedLevelDatas[lvl].promedioTiempoNivel);
+                PrintL("promedioDetecciones: " + processedLevelDatas[lvl].promedioDetecciones);
+                PrintL("promedioGuardiasFlasheados: " + processedLevelDatas[lvl].promedioGuardiasFlasheados);
+                PrintL("porcentajeCamarasDesactivadas: " + processedLevelDatas[lvl].porcentajeCamarasDesactivadas);
+                PrintL("promedioDeteccionCamaras: " + processedLevelDatas[lvl].promedioDeteccionCamaras);
+                PrintL("porcentajeCarretesRecogidos: " + processedLevelDatas[lvl].porcentajeCarretesRecogidos);
+                PrintL("porcentajeFlashesRecogidos: " + processedLevelDatas[lvl].porcentajeFlashesRecogidos);
+                PrintL("promedioTiempoEnHallarObjetivo: " + processedLevelDatas[lvl].promedioTiempoEnHallarObjetivo);
+                PrintL("promedioFotosContraGuardias: " + processedLevelDatas[lvl].promedioFotosContraGuardias);
+                PrintL("promedioFallosMinijuego: " + processedLevelDatas[lvl].promedioFallosMinijuego);
+
+                Print("porcentajeColeccionablesConcretos: ");
+                foreach (KeyValuePair<int, uint> collectable in processedLevelDatas[lvl].porcentajeColeccionablesConcretos)
+                {
+                    Print(collectable.Key.ToString() + '-' + collectable.Value.ToString() + ' ');
+                }
+                
+
+            }
         }
         catch (System.Exception e)
         {
-            Debug.LogError("General telemetry file can't be read. It may be corrupted!  Details: ");
+            Debug.LogError("General telemetry file can't be written.  Details: ");
             Debug.LogError(e.Message);
         }
         return true;
