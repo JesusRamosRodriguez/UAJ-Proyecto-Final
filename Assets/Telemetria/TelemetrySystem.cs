@@ -81,8 +81,6 @@ public class TelemetrySystem{
 
         persistence = new PersistenceSystem();
         persistence.Init();
-
-        Debug.LogError("HAGO EL INIT eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     }
 
     public static TelemetrySystem Instance
@@ -126,7 +124,6 @@ public class TelemetrySystem{
         //}
         levelEvent("FinSesion");
         //ForcedUpdate();
-        Debug.LogError("HAGO EL SHUTDOWN eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         persistence.ShutDown();
 
         isRunning = false;
