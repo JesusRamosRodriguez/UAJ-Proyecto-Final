@@ -321,10 +321,10 @@ public class PersistenceSystem
         switch (e.eventName)
         {
             case "PlayerPosition":
-                levelDatas[currentLevel - 1].posicionesJugador[Mathf.RoundToInt(e.x), Mathf.RoundToInt(e.y)] += heatMapIncrease;
+                processPositions(ref levelDatas[currentLevel - 1].posicionesJugador, e.x, e.y);
                 break;
             case "GuardiaPosition":
-                levelDatas[currentLevel - 1].posicionesGuardias[Mathf.RoundToInt(e.x), Mathf.RoundToInt(e.y)] += heatMapIncrease;
+                processPositions(ref levelDatas[currentLevel - 1].posicionesGuardias, e.x, e.y);
                 break;
             default:            
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
@@ -514,6 +514,79 @@ public class PersistenceSystem
         return (uint)Mathf.RoundToInt((accData * accWeight) +
             (pctPartidaActual * (1.0f - accWeight)));
     }
+
+    #region Mapas de calor
+    private bool processPositions(ref float [,] heatMap, float x, float y)
+    {
+        float oldMinX; float oldMaxX;
+        float oldMinY; float oldMaxY;
+
+        switch (currentLevel)
+        {
+            case 1:
+                oldMinX = -29; oldMaxX = 75;
+                oldMinY = -69; oldMaxY = 34;
+                break;
+            case 2:
+                oldMinX = 12; oldMaxX = 87;
+                oldMinY = -79; oldMaxY = 17;
+                break;
+            case 3:
+                oldMinX = -71; oldMaxX = 49;
+                oldMinY = -16; oldMaxY = 46;
+                break;
+            default:
+                oldMinX = 0; oldMaxX = 0;
+                oldMinY = 0; oldMaxY = 0;
+                break;
+        }
+        if (oldMinX == 0) return false;
+
+        int adjustedX = Mathf.RoundToInt(rangeChange(x, oldMinX, oldMaxX, sizeX, sizeY));
+        int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, sizeX, sizeY));
+
+        heatMap[adjustedX, adjustedY] += heatMapIncrease;
+
+        return true;
+    }
+
+    private float rangeChange (float x, float oMin, float oMax, float nMin, float nMax)
+    {
+        // Range check
+        if(oMin == oMax)
+        {
+            return 0;
+        }
+        if (nMin == nMax)
+        {
+            return 0;
+        }
+
+        float result = 0;
+
+        // Check reversed input range
+        bool reverseInput = false;
+        float oldMin = Mathf.Min(oMin, oMax);
+        float oldMax = Mathf.Max(oMin, oMax);
+        if (oldMin != oMin) reverseInput = true;
+
+        // Check reversed output range
+        bool reverseOutput = false;
+        float newMin = Mathf.Min(nMin, nMax);
+        float newMax = Mathf.Max(nMin, nMax);
+        if (newMin != nMin) reverseOutput = true;
+
+        float portion = (x - oldMin) * (newMax - newMin) / (oldMax - oldMin);
+
+        if (reverseInput) {
+            portion = (oldMax - x) * (newMax - newMin) / (oldMax - oldMin);
+            result = portion + newMin;
+        }
+        if (reverseOutput) result = newMax - portion;
+        return result;
+    }
+    #endregion
+
     #endregion
 
     #region Decoder
