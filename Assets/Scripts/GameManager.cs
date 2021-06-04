@@ -351,7 +351,6 @@ public class GameManager : MonoBehaviour {
     }
     public void Nivel1()
     {
-        nivel1.minijuego = false;
         /* if (nivel1.terminado || primeravez == 1)
              SceneManager.LoadScene("Nivel1");
          else
@@ -361,14 +360,13 @@ public class GameManager : MonoBehaviour {
              primeravez = 1;
          }*/
         SceneManager.LoadScene("Nivel1");
+        nivel1.minijuego = false;
         actual = "Nivel1";
         bombillas = 4;
         carretes = 3;
         loot = 0;
         carreteEspecial = 1;
         nivel1.puntos = 0;
-
-        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
     void Cinematica1()
     {
@@ -385,8 +383,6 @@ public class GameManager : MonoBehaviour {
         loot = 0;
         carreteEspecial = 1;
         nivel2.puntos = 0;
-
-        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
     public void Nivel3()
     {
@@ -398,8 +394,6 @@ public class GameManager : MonoBehaviour {
         loot = 0;
         carreteEspecial = 1;
         nivel3.puntos = 0;
-
-        telemetria.levelEvent("InicioNivel", getLevelNumber());
     }
 
     public void Pierde()
@@ -590,6 +584,8 @@ public class GameManager : MonoBehaviour {
         if (GameObject.FindWithTag("CamarasLaseres") != null)
             Destroy(GameObject.FindWithTag("CamarasLaseres"));
         tutoVisto = false;
+
+        TelemetrySystem.Instance.levelEvent("InicioNivel", GameManager.instance.getLevelNumber());
     }
     public void Reintentar()
     {
