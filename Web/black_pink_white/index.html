@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Paparazzi Infiltration</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">Paparazzi Infiltration</h1>
+          <h2>Usabilidad y Análisis de Juegos.</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li class="selected"><a href="index.html">Home</a></li>
+          <li><a href="nivel1.html">Nivel 1</a></li>
+          <li><a href="nivel2.html">Nivel 2</a></li>
+          <li><a href="nivel3.html">Nivel 3</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Resultados de las partidas</h1>
+        <p>Automatización de la creación de métricas y exportación a un excel de los datos extraídos de una partida. Se trata de crear un sistema que aproveche la telemetría para crear métricas (definidas a continuación) a raíz de las partidas de los usuarios, y las muestre en formatos fácilmente legibles en un archivo de excel externo, empleando gráficas, diagramas y mapas de calor para ello..</p>
+        <p>Una herramienta que facilite analizar los juegos para detectar fallos de diseño, de equilibrado y posibles problemas de usabilidad, así como recopilar los datos de múltiples usuarios a lo largo de varias pruebas para obtener la media de sus distintas métricas.</p>
+        <h2>Métricas a recopilar</h2>
+        <p>Dificultad y equilibrado</p>
+        <ul>
+          <li>Mapa de calor de muertes</li>
+          <li>Muertes por nivel / promedio de muertes</li>
+          <li>Porcentaje de flashes gastados por nivel1</li>
+          <li>Gráfica: muertes promedio por flashes empleados en un nivel</li>
+        </ul>
+        <p>Equilibrado del sistema de puntuación</p>
+        <ul>
+          <li>Puntuación total del usuario / puntuación promedio de usuarios</li>
+          <li>Porcentaje de objetos recogidos por nivel</li>
+          <li>Tiempo en completar un nivel / promedio de tiempo de los usuarios</li>
+          <li>Gráfica: relación de tiempo empleado en nivel por puntuación final de los usuarios</li>
+          <li>Gráfica: relación de objetos recogidos por puntuación final de los usuarios</li>
+        </ul>
+        <p>IA enemiga</p>
+        <ul>
+          <li>Promedio de detecciones de guardias por nivel</li>
+          <li>Mapa de calor de patrullas</li>
+          <li>Zonas de conflicto: Mapa de calor de patrullas superpuesto al mapa de calor del jugador</li>
+          <li>Promedio de guardias flasheados por nivel</li>
+        </ul>
+        <p>Diseño del nivel</p>
+        <ul>
+          <li>Mapa de calor general del nivel / camino promedio más usado por los jugadores</li>
+          <li>Porcentaje de cámaras desactivadas por nivel</li>
+          <li>Promedio de veces detectados por cámaras, por nivel</li>
+          <li>Porcentaje de carretes recogidos por nivel</li>
+          <li>Porcentaje de flashes recogidos por nivel</li>
+          <li>Tiempo promedio empleado en encontrar al famoso objetivo</li>
+        </ul>
+        <p>Interfaz y usabilidad</p>
+        <ul>
+          <li>Fotos utilizadas contra guardias (para comprobar si se distingue el botón de flash del de foto)</li>
+          <li>Fallos promedio durante el minijuego</li>
+          <li>Promedio de clicks de los jugadores durante las cinemáticas (Cálculo de la desesperación)</li>
+        </ul>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; Paparazzi Infiltration
+    </div>
+  </div>
+</body>
+</html>
