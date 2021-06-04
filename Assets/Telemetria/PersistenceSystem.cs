@@ -373,147 +373,143 @@ public class PersistenceSystem
     private bool ProcessCurrentLevel()
     {
 
-       /* try
-        { */
+        try
+        {
             int currentIndex = currentLevel - 1;
 
             processedLevelDatas[currentIndex].totalSamples += 1;
             uint accumulatedSamples = processedLevelDatas[currentIndex].totalSamples;
-            float acumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
+            float accumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
 
-            graphicsData zero; zero.valueX = 0; zero.valueY = 0;
+        processDificultyMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+        processScoreMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+        processIAMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+        processDesignMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+        processInterfaceMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
 
-            #region Dificultad y equilibrado
-            // Promedio muertes
-            processedLevelDatas[currentIndex].promedioMuertes = (processedLevelDatas[currentIndex].promedioMuertes * acumulatedDataWeight) +
-                (levelDatas[currentIndex].muertes * (1.0f - acumulatedDataWeight));
-
-            // Porcentaje flashes gastados
-            processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
-                (levelConsts[currentIndex].tFlashes + 3), acumulatedDataWeight);
-
-            // TODO: ACUMULAR MAPA CALOR MUERTE
-
-            // Gráfica Flashes-Muertes
-            graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
-            if (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count > 10)
-            {
-                processedLevelDatas[currentIndex].graficaFlashesMuertes.RemoveAt(0);
-                processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
-            }
-            else
-            {
-                processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
-                while (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-            }
-
-            #endregion
-
-            #region Sistema puntuacion
-            // Promedio puntuacion
-            processedLevelDatas[currentIndex].promedioPuntuacion = (processedLevelDatas[currentIndex].promedioPuntuacion * acumulatedDataWeight) +
-                (levelDatas[currentIndex].puntuacionFinal * (1.0f - acumulatedDataWeight));
-
-            // Porcentaje coleccionables
-            processedLevelDatas[currentIndex].porcentajeColeccionables = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeColeccionables,
-                levelDatas[currentIndex].coleccionablesRecogidos, levelConsts[currentIndex].tColeccionables, acumulatedDataWeight);
-
-            // Porcentaje coleccionables concretos
-            foreach (int id in levelDatas[currentIndex].coleccionables)
-            {
-                uint storedValue;
-                if (processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.TryGetValue(id, out storedValue))
-                {
-                    uint newPercentage = (storedValue * accumulatedSamples) / (accumulatedSamples - 1);
-                }
-                else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)(1 / accumulatedSamples));
-            }
-
-            // Promedio tiempo nivel
-            processedLevelDatas[currentIndex].promedioTiempoNivel = (processedLevelDatas[currentIndex].promedioTiempoNivel * acumulatedDataWeight) +
-                (levelDatas[currentIndex].tiempoPartida * (1.0f - acumulatedDataWeight));
-
-            // Gráfica Puntuacion-Tiempo
-            graphicsData puntuacionTiempo; puntuacionTiempo.valueX = (uint)levelDatas[currentIndex].puntuacionFinal; puntuacionTiempo.valueY = levelDatas[currentIndex].tiempoPartida;
-            if (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count > 10)
-            {
-                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.RemoveAt(0);
-                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
-            }
-            else
-            {
-                processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
-                while (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-            }
-
-            // Gráfica Coleccionables-Puntuacion
-            graphicsData coleccPuntuacion; coleccPuntuacion.valueX = levelDatas[currentIndex].coleccionablesRecogidos; coleccPuntuacion.valueY = (uint)levelDatas[currentIndex].puntuacionFinal;
-            if (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count > 10)
-            {
-                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.RemoveAt(0);
-                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
-            }
-            else
-            {
-                processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
-                while (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count < 10) processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(zero);
-            }
-
-            #endregion
-
-            #region IA Enemiga
-            // Promedio detecciones
-            processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * acumulatedDataWeight) +
-               (levelDatas[currentIndex].deteccionesGuardia * (1.0f - acumulatedDataWeight));
-
-            // TODO: ACUMULAR MAPA CALOR GUARDIAS
-
-            // Promedio guardias flasheados
-            processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * acumulatedDataWeight) +
-               (levelDatas[currentIndex].flashesAGuardias * (1.0f - acumulatedDataWeight));
-            #endregion
-
-            #region Diseño nivel
-            // TODO: ACUMULAR MAPA DE CALOR DEL NIVEL
-
-            // Porcentaje Camaras desactivadas
-            processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
-                levelDatas[currentIndex].camarasDesactivadas, levelConsts[currentIndex].tCamaras, acumulatedDataWeight);
-
-            // Promedio deteccion camaras
-            processedLevelDatas[currentIndex].promedioDeteccionCamaras = (processedLevelDatas[currentIndex].promedioDeteccionCamaras * acumulatedDataWeight) +
-               (levelDatas[currentIndex].deteccionesCamara * (1.0f - acumulatedDataWeight));
-
-            // Porcentaje carretes recogidos
-            processedLevelDatas[currentIndex].porcentajeCarretesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCarretesRecogidos,
-                levelDatas[currentIndex].fotosRecogidas, levelConsts[currentIndex].tCarretes, acumulatedDataWeight);
-
-            // Porcentaje flashes recogidos
-            processedLevelDatas[currentIndex].porcentajeFlashesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashesRecogidos,
-                levelDatas[currentIndex].flashesRecogidos, levelConsts[currentIndex].tFlashes, acumulatedDataWeight);
-
-            // Promedio tiempo en hallar objetivo
-            processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo = (processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo * acumulatedDataWeight) +
-               (levelDatas[currentIndex].tiempoEnEncontrarObjetivo * (1.0f - acumulatedDataWeight));
-            #endregion
-
-            #region Interfaz y usabilidad
-            // Promedio de fotos contra guardias
-            processedLevelDatas[currentIndex].promedioFotosContraGuardias = (processedLevelDatas[currentIndex].promedioFotosContraGuardias * acumulatedDataWeight) +
-               (levelDatas[currentIndex].fotosAGuardias * (1.0f - acumulatedDataWeight));
-
-            // Promedio Fallos Minijuego
-            processedLevelDatas[currentIndex].promedioFallosMinijuego = (processedLevelDatas[currentIndex].promedioFallosMinijuego * acumulatedDataWeight) +
-               (levelDatas[currentIndex].fallosMinijuego * (1.0f - acumulatedDataWeight));
-            #endregion
-        //}
-        /*catch (System.Exception e)
+        }
+        catch (System.Exception e)
         {
             Debug.LogError("Fail processing current level!  Details: ");
             Debug.LogError(e.Message + " / " + e.Data);
             return false;
-        }*/
+        }
         return true;
+    }
+
+    private void processDificultyMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
+    {
+        // Promedio muertes
+        processedLevelDatas[currentIndex].promedioMuertes = (processedLevelDatas[currentIndex].promedioMuertes * accumulatedDataWeight) +
+            (levelDatas[currentIndex].muertes * (1.0f - accumulatedDataWeight));
+
+        // Porcentaje flashes gastados
+        processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
+            (levelConsts[currentIndex].tFlashes + 3), accumulatedDataWeight);
+
+        // TODO: ACUMULAR MAPA CALOR MUERTE
+
+        // Gráfica Flashes-Muertes
+        graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
+        if (processedLevelDatas[currentIndex].graficaFlashesMuertes.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaFlashesMuertes.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
+        }
+        else processedLevelDatas[currentIndex].graficaFlashesMuertes.Add(flashesMuertes);
+    }
+
+    private void processScoreMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
+    {
+        // Promedio puntuacion
+        processedLevelDatas[currentIndex].promedioPuntuacion = (processedLevelDatas[currentIndex].promedioPuntuacion * accumulatedDataWeight) +
+            (levelDatas[currentIndex].puntuacionFinal * (1.0f - accumulatedDataWeight));
+
+        // Porcentaje coleccionables
+        processedLevelDatas[currentIndex].porcentajeColeccionables = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeColeccionables,
+            levelDatas[currentIndex].coleccionablesRecogidos, levelConsts[currentIndex].tColeccionables, accumulatedDataWeight);
+
+        // Porcentaje coleccionables concretos
+        foreach (int id in levelDatas[currentIndex].coleccionables)
+        {
+            uint storedValue;
+            if (processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.TryGetValue(id, out storedValue))
+            {
+                uint newPercentage = (storedValue * accumulatedSamples) / (accumulatedSamples - 1);
+            }
+            else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)(1 / accumulatedSamples));
+        }
+
+        // Promedio tiempo nivel
+        processedLevelDatas[currentIndex].promedioTiempoNivel = (processedLevelDatas[currentIndex].promedioTiempoNivel * accumulatedDataWeight) +
+            (levelDatas[currentIndex].tiempoPartida * (1.0f - accumulatedDataWeight));
+
+        // Gráfica Puntuacion-Tiempo
+        graphicsData puntuacionTiempo; puntuacionTiempo.valueX = (uint)levelDatas[currentIndex].puntuacionFinal; puntuacionTiempo.valueY = levelDatas[currentIndex].tiempoPartida;
+        if (processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+        }
+        else processedLevelDatas[currentIndex].graficaPuntuacionTiempo.Add(puntuacionTiempo);
+
+        // Gráfica Coleccionables-Puntuacion
+        graphicsData coleccPuntuacion; coleccPuntuacion.valueX = levelDatas[currentIndex].coleccionablesRecogidos; coleccPuntuacion.valueY = (uint)levelDatas[currentIndex].puntuacionFinal;
+        if (processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Count > 10)
+        {
+            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.RemoveAt(0);
+            processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+        }
+        else processedLevelDatas[currentIndex].graficaColeccionablesPuntuacion.Add(coleccPuntuacion);
+    }
+
+    private void processIAMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
+    {
+        // Promedio detecciones
+        processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * accumulatedDataWeight) +
+               (levelDatas[currentIndex].deteccionesGuardia * (1.0f - accumulatedDataWeight));
+
+        // TODO: ACUMULAR MAPA CALOR GUARDIAS
+
+        // Promedio guardias flasheados
+        processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * accumulatedDataWeight) +
+           (levelDatas[currentIndex].flashesAGuardias * (1.0f - accumulatedDataWeight));
+    }
+
+    private void processDesignMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
+    {
+        // TODO: ACUMULAR MAPA DE CALOR DEL NIVEL
+
+        // Porcentaje Camaras desactivadas
+        processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
+            levelDatas[currentIndex].camarasDesactivadas, levelConsts[currentIndex].tCamaras, accumulatedDataWeight);
+
+        // Promedio deteccion camaras
+        processedLevelDatas[currentIndex].promedioDeteccionCamaras = (processedLevelDatas[currentIndex].promedioDeteccionCamaras * accumulatedDataWeight) +
+           (levelDatas[currentIndex].deteccionesCamara * (1.0f - accumulatedDataWeight));
+
+        // Porcentaje carretes recogidos
+        processedLevelDatas[currentIndex].porcentajeCarretesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCarretesRecogidos,
+            levelDatas[currentIndex].fotosRecogidas, levelConsts[currentIndex].tCarretes, accumulatedDataWeight);
+
+        // Porcentaje flashes recogidos
+        processedLevelDatas[currentIndex].porcentajeFlashesRecogidos = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashesRecogidos,
+            levelDatas[currentIndex].flashesRecogidos, levelConsts[currentIndex].tFlashes, accumulatedDataWeight);
+
+        // Promedio tiempo en hallar objetivo
+        processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo = (processedLevelDatas[currentIndex].promedioTiempoEnHallarObjetivo * accumulatedDataWeight) +
+           (levelDatas[currentIndex].tiempoEnEncontrarObjetivo * (1.0f - accumulatedDataWeight));
+    }
+
+    private void processInterfaceMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
+    {
+        // Promedio de fotos contra guardias
+        processedLevelDatas[currentIndex].promedioFotosContraGuardias = (processedLevelDatas[currentIndex].promedioFotosContraGuardias * accumulatedDataWeight) +
+               (levelDatas[currentIndex].fotosAGuardias * (1.0f - accumulatedDataWeight));
+
+        // Promedio Fallos Minijuego
+        processedLevelDatas[currentIndex].promedioFallosMinijuego = (processedLevelDatas[currentIndex].promedioFallosMinijuego * accumulatedDataWeight) +
+           (levelDatas[currentIndex].fallosMinijuego * (1.0f - accumulatedDataWeight));
     }
 
     private uint processPercentageMetric (uint accData, uint newData, uint levelConstData, float accWeight)

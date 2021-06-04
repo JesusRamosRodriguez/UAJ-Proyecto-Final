@@ -3,6 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEditor;
+
+// ensure class initializer is called whenever scripts recompile
+[InitializeOnLoadAttribute]
+public class EditorHelper : EditorWindow
+{
+    public void Awake()
+    {
+        EditorApplication.playModeStateChanged += PlaymodeCallback;
+    }
+    public void PlaymodeCallback(PlayModeStateChange state)
+    {
+        if (state.Equals(PlayModeStateChange.ExitingPlayMode))
+        {
+            TelemetrySystem.Instance.shutdown();
+        }
+    }
+}
+
 
 /// Eventos que solo pasan el propio evento como información
 public struct singleEvent
@@ -56,10 +75,14 @@ public class TelemetrySystem{
         canUpdate = false;
         threadIsStopped = true;
 
+        isRunning = true;
+
         //eventQueue = new Queue<TelemetryEvent>();
 
         persistence = new PersistenceSystem();
         persistence.Init();
+
+        Debug.LogError("HAGO EL INIT eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     }
 
     public static TelemetrySystem Instance
@@ -90,16 +113,23 @@ public class TelemetrySystem{
     Thread telemetryThread;
     bool threadIsStopped;
 
+    // Control de ejecución
+    bool isRunning;
+
 
     public void shutdown()
     {
-        if (!threadIsStopped)
-        {
-            telemetryThread.Join();
-        }
+        if (!isRunning) return;
+        //if (!threadIsStopped)
+        //{
+        //    telemetryThread.Join();
+        //}
         levelEvent("FinSesion");
-        ForcedUpdate();
+        //ForcedUpdate();
+        Debug.LogError("HAGO EL SHUTDOWN eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         persistence.ShutDown();
+
+        isRunning = false;
     }
 
     public void Update () {
