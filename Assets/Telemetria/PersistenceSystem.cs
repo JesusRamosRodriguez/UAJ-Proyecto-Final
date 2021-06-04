@@ -283,6 +283,9 @@ public class PersistenceSystem
             case "CamaraDetectaJugador":
                 levelDatas[currentLevel - 1].deteccionesCamara++;
                 break;
+            case "CamaraDesactivada":
+                levelDatas[currentLevel - 1].camarasDesactivadas++; ;
+                break;
             case "ClickCinematica":
                 clicksEnCinematica++;
                 break;
@@ -365,8 +368,8 @@ public class PersistenceSystem
     private bool ProcessCurrentLevel()
     {
 
-        try
-        { 
+       /* try
+        { */
             int currentIndex = currentLevel - 1;
 
             processedLevelDatas[currentIndex].totalSamples += 1;
@@ -498,13 +501,13 @@ public class PersistenceSystem
             processedLevelDatas[currentIndex].promedioFallosMinijuego = (processedLevelDatas[currentIndex].promedioFallosMinijuego * acumulatedDataWeight) +
                (levelDatas[currentIndex].fallosMinijuego * (1.0f - acumulatedDataWeight));
             #endregion
-        }
-        catch (System.Exception e)
+        //}
+        /*catch (System.Exception e)
         {
             Debug.LogError("Fail processing current level!  Details: ");
-            Debug.LogError(e.Message);
+            Debug.LogError(e.Message + " / " + e.Data);
             return false;
-        }
+        }*/
         return true;
     }
 
@@ -515,6 +518,7 @@ public class PersistenceSystem
             (pctPartidaActual * (1.0f - accWeight)));
     }
 
+    
     #region Mapas de calor
     private bool processPositions(ref float [,] heatMap, float x, float y)
     {
@@ -591,8 +595,8 @@ public class PersistenceSystem
 
     #region Decoder
 
-//  Auxiliar readers
-private uint GetuintFromPos(int pos) { return uint.Parse(sr.ReadLine().Split(':')[pos]); }
+    //  Auxiliar readers
+    private uint GetuintFromPos(int pos) { return uint.Parse(sr.ReadLine().Split(':')[pos]); }
     private float GetfloatFromPos(int pos) { return float.Parse(sr.ReadLine().Split(':')[pos]); }
     private bool DecodeLevel(uint level)
     {

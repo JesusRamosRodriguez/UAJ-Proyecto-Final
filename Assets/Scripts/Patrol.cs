@@ -137,7 +137,7 @@ public class Patrol : MonoBehaviour {
 
     public void AcudeACamara(Transform camara)
     {
-        TelemetrySystem.Instance.singleEvent("GuardiaDetectaJugador", GameManager.instance.getLevelNumber());
+        TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
         patrulla = false;
         acudeCamara = true;
         agent.SetDestination(camara.position);

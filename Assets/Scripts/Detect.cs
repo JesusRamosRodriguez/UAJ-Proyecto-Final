@@ -51,7 +51,10 @@ public class Detect : MonoBehaviour {
 		GameObject go = col.gameObject;
 
 		if (go.CompareTag("Player"))
+        {
 			dentro = true;
+			TelemetrySystem.Instance.singleEvent("GuardiaDetectaJugador", GameManager.instance.getLevelNumber());
+		}
 	}
 
 	private void OnTriggerExit2D(Collider2D col)
