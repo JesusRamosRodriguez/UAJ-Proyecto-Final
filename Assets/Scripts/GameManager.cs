@@ -351,7 +351,6 @@ public class GameManager : MonoBehaviour {
     }
     public void Nivel1()
     {
-        nivel1.minijuego = false;
         /* if (nivel1.terminado || primeravez == 1)
              SceneManager.LoadScene("Nivel1");
          else
@@ -361,6 +360,7 @@ public class GameManager : MonoBehaviour {
              primeravez = 1;
          }*/
         SceneManager.LoadScene("Nivel1");
+        nivel1.minijuego = false;
         actual = "Nivel1";
         bombillas = 4;
         carretes = 3;
