@@ -535,27 +535,36 @@ public class PersistenceSystem
                 oldMinX = -29; oldMaxX = 75;
                 oldMinY = -69; oldMaxY = 35;
 
-                newMinX = -29; newMaxX = 75;
-                newMinY = -69; newMaxY = 35;
+                newMinX = 0; newMaxX = 100;
+                newMinY = 0; newMaxY = 100;
 
                 break;
             case 2:
                 oldMinX = 12; oldMaxX = 87;
                 oldMinY = -79; oldMaxY = 17;
+
+                newMinX = 12; newMaxX = 88;
+                newMinY = 0; newMaxY = 100;
                 break;
             case 3:
                 oldMinX = -71; oldMaxX = 49;
                 oldMinY = -16; oldMaxY = 46;
+
+                newMinX = 0; newMaxX = 100;
+                newMinY = 23; newMaxY = 77;
                 break;
             default:
                 oldMinX = 0; oldMaxX = 0;
                 oldMinY = 0; oldMaxY = 0;
+
+                newMinX = 0; newMaxX = 100;
+                newMinY = 0; newMaxY = 100;
                 break;
         }
         if (oldMinX == 0) return false;
 
-        int adjustedX = Mathf.RoundToInt(rangeChange(x, oldMinX, oldMaxX, sizeX, sizeY));
-        int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, sizeX, sizeY));
+        int adjustedX = Mathf.RoundToInt(rangeChange(x, oldMinX, oldMaxX, newMinX, newMaxX));
+        int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, newMinY, newMaxY));
 
         heatMap[adjustedX, adjustedY] += heatMapIncrease;
 
