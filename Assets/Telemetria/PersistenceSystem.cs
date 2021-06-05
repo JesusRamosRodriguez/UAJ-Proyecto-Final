@@ -175,20 +175,20 @@ public class PersistenceSystem
 
     private void initLevelConsts()
     {
-        level1consts.tCarretes = 1;
-        level1consts.tFlashes = 1;
-        level1consts.tCamaras = 1;
-        level1consts.tColeccionables = 1;
+        level1consts.tCarretes = 3;
+        level1consts.tFlashes = 4;
+        level1consts.tCamaras = 4;
+        level1consts.tColeccionables = 5;
 
-        level2consts.tCarretes = 1;
-        level2consts.tFlashes = 1;
-        level2consts.tCamaras = 1;
-        level2consts.tColeccionables = 1;
+        level2consts.tCarretes = 3;
+        level2consts.tFlashes = 4;
+        level2consts.tCamaras = 3;
+        level2consts.tColeccionables = 5;
 
-        level3consts.tCarretes = 1;
-        level3consts.tFlashes = 1;
-        level3consts.tCamaras = 1;
-        level3consts.tColeccionables = 1;
+        level3consts.tCarretes = 2;
+        level3consts.tFlashes = 4;
+        level3consts.tCamaras = 2;
+        level3consts.tColeccionables = 5;
 
         levelConsts = new constLevelData[] { level1consts, level2consts, level3consts };
     }
@@ -250,7 +250,10 @@ public class PersistenceSystem
 
     public bool ShutDown()  //  Shuts down the system
     {
+        sw.Close();
+        sr.Close();
         fs.Close();
+        Debug.Log("ShutDown...");
         return true;
     }
     #endregion
@@ -289,10 +292,13 @@ public class PersistenceSystem
                 levelDatas[currentLevel - 1].deteccionesCamara++;
                 break;
             case "CamaraDesactivada":
-                levelDatas[currentLevel - 1].camarasDesactivadas++; ;
+                levelDatas[currentLevel - 1].camarasDesactivadas++;
                 break;
             case "ClickCinematica":
                 clicksEnCinematica++;
+                break;
+            case "FalloMinijuego":
+                levelDatas[currentLevel - 1].fallosMinijuego++;
                 break;
             default:
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'singleEvent' no reconocible. Id del evento: " + e.eventName);
@@ -349,7 +355,7 @@ public class PersistenceSystem
                 currentLevel = e.nivel;
                 break;
             case "FinNivel":
-                if (ProcessCurrentLevel()) if (Encode()) return true;
+                if (ProcessCurrentLevel()) return Encode();
                 break;
             case "Reinicio":
                 levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY, true);
@@ -381,11 +387,11 @@ public class PersistenceSystem
             uint accumulatedSamples = processedLevelDatas[currentIndex].totalSamples;
             float accumulatedDataWeight = (accumulatedSamples - 1) / accumulatedSamples;
 
-        processDificultyMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
-        processScoreMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
-        processIAMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
-        processDesignMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
-        processInterfaceMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+            processDificultyMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+            processScoreMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+            processIAMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+            processDesignMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
+            processInterfaceMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
 
         }
         catch (System.Exception e)
@@ -694,34 +700,34 @@ public class PersistenceSystem
     {
         try
         {
-            uint lvl = 0;
-
             for (int i = 0; i < 3; i++)   // Rewrites the 3 lvls in general.txt
             {
-                PrintL("Lvl " + lvl + 1);
-                if (lvl == 0) PrintL("promedioClicksEnCinematica: " + promedioClicksEnCinematica);  // Exclusive of lvl 1 (index 0)
-                PrintL("totalSamples: " + processedLevelDatas[lvl].totalSamples);
-                PrintL("promedioMuertes: " + processedLevelDatas[lvl].promedioMuertes);
-                PrintL("porcentajeFlashes: " + processedLevelDatas[lvl].porcentajeFlashes);
-                PrintL("promedioPuntuacion: " + processedLevelDatas[lvl].promedioPuntuacion);
-                PrintL("porcentajeColeccionables: " + processedLevelDatas[lvl].porcentajeColeccionables);
-                PrintL("promedioTiempoNivel: " + processedLevelDatas[lvl].promedioTiempoNivel);
-                PrintL("promedioDetecciones: " + processedLevelDatas[lvl].promedioDetecciones);
-                PrintL("promedioGuardiasFlasheados: " + processedLevelDatas[lvl].promedioGuardiasFlasheados);
-                PrintL("porcentajeCamarasDesactivadas: " + processedLevelDatas[lvl].porcentajeCamarasDesactivadas);
-                PrintL("promedioDeteccionCamaras: " + processedLevelDatas[lvl].promedioDeteccionCamaras);
-                PrintL("porcentajeCarretesRecogidos: " + processedLevelDatas[lvl].porcentajeCarretesRecogidos);
-                PrintL("porcentajeFlashesRecogidos: " + processedLevelDatas[lvl].porcentajeFlashesRecogidos);
-                PrintL("promedioTiempoEnHallarObjetivo: " + processedLevelDatas[lvl].promedioTiempoEnHallarObjetivo);
-                PrintL("promedioFotosContraGuardias: " + processedLevelDatas[lvl].promedioFotosContraGuardias);
-                PrintL("promedioFallosMinijuego: " + processedLevelDatas[lvl].promedioFallosMinijuego);
+                PrintL("Lvl " + (i + 1));
+                if (i == 0) PrintL("promedioClicksEnCinematica: " + promedioClicksEnCinematica);  // Exclusive of lvl 1 (index 0)
+                PrintL("totalSamples: " + processedLevelDatas[i].totalSamples);
+                PrintL("promedioMuertes: " + processedLevelDatas[i].promedioMuertes);
+                PrintL("porcentajeFlashes: " + processedLevelDatas[i].porcentajeFlashes);
+                PrintL("promedioPuntuacion: " + processedLevelDatas[i].promedioPuntuacion);
+                PrintL("porcentajeColeccionables: " + processedLevelDatas[i].porcentajeColeccionables);
+                PrintL("promedioTiempoNivel: " + processedLevelDatas[i].promedioTiempoNivel);
+                PrintL("promedioDetecciones: " + processedLevelDatas[i].promedioDetecciones);
+                PrintL("promedioGuardiasFlasheados: " + processedLevelDatas[i].promedioGuardiasFlasheados);
+                PrintL("porcentajeCamarasDesactivadas: " + processedLevelDatas[i].porcentajeCamarasDesactivadas);
+                PrintL("promedioDeteccionCamaras: " + processedLevelDatas[i].promedioDeteccionCamaras);
+                PrintL("porcentajeCarretesRecogidos: " + processedLevelDatas[i].porcentajeCarretesRecogidos);
+                PrintL("porcentajeFlashesRecogidos: " + processedLevelDatas[i].porcentajeFlashesRecogidos);
+                PrintL("promedioTiempoEnHallarObjetivo: " + processedLevelDatas[i].promedioTiempoEnHallarObjetivo);
+                PrintL("promedioFotosContraGuardias: " + processedLevelDatas[i].promedioFotosContraGuardias);
+                PrintL("promedioFallosMinijuego: " + processedLevelDatas[i].promedioFallosMinijuego);
 
                 Print("porcentajeColeccionablesConcretos: ");
-                foreach (KeyValuePair<int, uint> collectable in processedLevelDatas[lvl].porcentajeColeccionablesConcretos)
+                foreach (KeyValuePair<int, uint> collectable in processedLevelDatas[i].porcentajeColeccionablesConcretos)
                 {
                     Print(collectable.Key.ToString() + '-' + collectable.Value.ToString() + ' ');
                 }
-            }          
+                sw.Write('\n');
+                Debug.Log("Successfull encoding! lvl: " + i + 1);
+            }
         }
         catch (System.Exception e)
         {
