@@ -110,6 +110,11 @@ public class PersistenceSystem
 
     constLevelData[] levelConsts;
 
+    // Heat Maps
+    float[] playerMapsMaxValue;
+    float[] deathMapsMaxValue;
+    float[] guardsMapsMaxValue;
+
     //  Session data
     uint clicksEnCinematica = 0;
     float promedioClicksEnCinematica = 0; // EL DATO ACUMULADO, habría que descodificarlo/cargarlo en el init
@@ -245,6 +250,11 @@ public class PersistenceSystem
         // Level constants
         initLevelConsts();
 
+        // Heat Maps
+        playerMapsMaxValue = new float[3];
+        deathMapsMaxValue = new float[3];
+        guardsMapsMaxValue = new float[3];
+
         return true;
     }
 
@@ -335,10 +345,13 @@ public class PersistenceSystem
         switch (e.eventName)
         {
             case "PlayerPosition":
-                processPositions(ref levelDatas[currentLevel - 1].posicionesJugador, e.x, e.y);
+                processPositions(ref levelDatas[currentLevel - 1].posicionesJugador, e.x, e.y, 1);
+                break;
+            case "MuertePosition":
+                processPositions(ref levelDatas[currentLevel - 1].muertesJugador, e.x, e.y, 2);
                 break;
             case "GuardiaPosition":
-                processPositions(ref levelDatas[currentLevel - 1].posicionesGuardias, e.x, e.y);
+                processPositions(ref levelDatas[currentLevel - 1].posicionesGuardias, e.x, e.y, 3);
                 break;
             default:            
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
@@ -393,6 +406,12 @@ public class PersistenceSystem
             processDesignMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
             processInterfaceMetrics(currentIndex, accumulatedSamples, accumulatedDataWeight);
 
+            if(currentLevel == 1)
+            {
+                promedioClicksEnCinematica = (promedioClicksEnCinematica * accumulatedDataWeight) +
+            (clicksEnCinematica * (1.0f - accumulatedDataWeight));
+            }
+
         }
         catch (System.Exception e)
         {
@@ -413,7 +432,8 @@ public class PersistenceSystem
         processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
             (levelConsts[currentIndex].tFlashes + 4), accumulatedDataWeight);
 
-        // TODO: ACUMULAR MAPA CALOR MUERTE
+        // ACUMULAR MAPA CALOR MUERTE
+        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorMuertes, levelDatas[currentIndex].muertesJugador, accumulatedDataWeight, 2);
 
         // Gráfica Flashes-Muertes
         graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
@@ -475,7 +495,8 @@ public class PersistenceSystem
         processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * accumulatedDataWeight) +
                (levelDatas[currentIndex].deteccionesGuardia * (1.0f - accumulatedDataWeight));
 
-        // TODO: ACUMULAR MAPA CALOR GUARDIAS
+        // ACUMULAR MAPA CALOR GUARDIAS
+        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorGuardias, levelDatas[currentIndex].posicionesGuardias, accumulatedDataWeight, 3);
 
         // Promedio guardias flasheados
         processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * accumulatedDataWeight) +
@@ -484,7 +505,8 @@ public class PersistenceSystem
 
     private void processDesignMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
     {
-        // TODO: ACUMULAR MAPA DE CALOR DEL NIVEL
+        // ACUMULAR MAPA DE CALOR DEL NIVEL
+        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorNivel, levelDatas[currentIndex].posicionesJugador, accumulatedDataWeight, 1);
 
         // Porcentaje Camaras desactivadas
         processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
@@ -527,7 +549,7 @@ public class PersistenceSystem
 
     
     #region Mapas de calor
-    private bool processPositions(ref float [,] heatMap, float x, float y)
+    private bool processPositions(ref float [,] heatMap, float x, float y, int flag)
     {
         float oldMinX; float oldMaxX;
         float oldMinY; float oldMaxY;
@@ -573,6 +595,64 @@ public class PersistenceSystem
         int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, newMinY, newMaxY));
 
         heatMap[adjustedX, adjustedY] += heatMapIncrease;
+
+        switch (flag)
+        {
+            case 1:
+                if (heatMap[adjustedX, adjustedY] > playerMapsMaxValue[currentLevel - 1])
+                    playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
+                    break;
+            case 2:
+                if (heatMap[adjustedX, adjustedY] > deathMapsMaxValue[currentLevel - 1])
+                    playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
+                break;
+            case 3:
+                if (heatMap[adjustedX, adjustedY] > guardsMapsMaxValue[currentLevel - 1])
+                    playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private bool accumulateHeatMap (ref float[,] accumulatedMap, float [,] newMap, float accDataWeight, int flag)
+    {
+        // Igualamos todos los valores del mapa nuevo al rango [0, 100]
+        float matrixMaxValue = 0.0f;
+        switch (flag)
+        {
+            case 1:
+                matrixMaxValue = playerMapsMaxValue[currentLevel - 1];
+                break;
+            case 2:
+                matrixMaxValue = deathMapsMaxValue[currentLevel - 1];
+                break;
+            case 3:
+                matrixMaxValue = guardsMapsMaxValue[currentLevel - 1];
+                break;
+            default:
+                break;
+        }
+
+        try
+        {
+            for (int i = 0; i < sizeX; i++)
+            {
+                for (int j = 0; j < sizeY; j++)
+                {
+                    if (newMap[i, j] > 0.0f) newMap[i, j] = rangeChange(newMap[i, j], 0, sizeX, 0, matrixMaxValue);
+
+                    // Procesamos dato en el mapa acumulado
+                    accumulatedMap[i, j] = (accumulatedMap[i, j] * accDataWeight) +
+                        (newMap[i, j] * (1.0f - accDataWeight));
+                }
+            }
+        } catch(System.IndexOutOfRangeException e)
+        {
+            Debug.LogError("Out of Range al procesar mapa de calor con el acumulado");
+            return false;
+        }
 
         return true;
     }
