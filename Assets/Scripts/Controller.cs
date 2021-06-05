@@ -75,6 +75,8 @@ public class Controller : MonoBehaviour {
         if (collision.CompareTag("Guardia") && collision.gameObject.transform.parent.transform.GetChild(0).GetComponent<Detect>().LeVeo())
         {
             TelemetrySystem.Instance.singleEvent("Muerte", GameManager.instance.getLevelNumber());
+            TelemetrySystem.Instance.positionEvent("MuertePosition", this.gameObject.transform.position.x,
+                this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
             GameManager.instance.Pierde();
         }
         else if (collision.CompareTag("Carrete") || collision.CompareTag("Bombilla"))
