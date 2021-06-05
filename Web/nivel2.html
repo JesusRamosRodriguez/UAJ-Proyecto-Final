@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html>
+
+<!--Variables:-->
+<script>
+  
+  </script>
+
+
+
+<head>
+  <title>Paparazzi Infiltration</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+
+  //Variables
+
+  var patatas = 69; 
+  var puntuacion = [10,50,30,20,69];
+  var tiempo = [86,49,58,38,67];
+
+  function main(){
+    document.getElementById("patatas").innerHTML = patatas;
+  }
+  //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
+
+  // Load the Visualization API and the corechart package.
+  google.charts.load('current', {'packages':['corechart']});
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.charts.setOnLoadCallback(drawChart);
+
+  // Callback that creates and populates a data table,
+  // instantiates the pie chart, passes in the data and
+  // draws it.
+
+
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X');
+      data.addColumn('number', 'P');
+
+      data.addRows([
+        [puntuacion[0],tiempo[0]], [puntuacion[1],tiempo[1]], [puntuacion[2],tiempo[2]], [puntuacion[3],tiempo[3]], [puntuacion[4],tiempo[4]],
+      ]);
+
+      var options = {
+        hAxis: {
+          title: 'Tiempo'
+        },
+        vAxis: {
+          title: 'Puntuación'
+        },
+        backgroundColor: '#f1f8e9'
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+  }
+</script>
+
+</head>
+
+<body onload="main()" src="/default.asp">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">Paparazzi Infiltration</h1>
+            <h2>Usabilidad y Análisis de Juegos.</h2>
+          </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="nivel1.html">Nivel 1</a></li>
+          <li><a href="nivel2.html">Nivel 2</a></li>
+          <li><a href="nivel3.html">Nivel 3</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        <!-- insert the page content here -->
+
+          
+
+        <h1>Nivel 2</h1>
+        <p> </p>
+        <h4>Partidas recopiladas hasta ahora: </h4><div id="patatas"></div>
+        <p> </p>
+        <h4>Dificultad y equilibrado</h4>
+        <p> </p>
+        <ul>
+          <li>Promedio de muertes por jugador:  <script> document.write(5 + 6); </script></li>
+          <li>Porcentaje de flashes gastados por jugador: </li>
+          <li>Mapa de calor de muertes: </li>
+          <p> </p>
+          <div id="MapaMuertesNivel2">
+            <center><img src="Mapas/Level2.jpg" alt="Mapa de calor de muertes - Nivel 2" style="width:250px;height:250px;"></center>
+          </div>
+          <p> </p>
+          <li>Muertes promedio por flashes empleados: </li>
+          <p> </p>
+          <div id="chart_div"></div>
+          <p> </p>
+        </ul>
+
+        
+
+        <h4>Equilibrado del sistema de puntuación</h4>
+        <ul>
+          <li>Puntuación total del usuario / puntuación promedio de usuarios</li>
+          <li>Porcentaje de objetos recogidos por nivel</li>
+          <li>Tiempo en completar un nivel / promedio de tiempo de los usuarios</li>
+          <li>Gráfica: relación de tiempo empleado en nivel por puntuación final de los usuarios</li>
+
+          <!--Div that will hold the pie chart-->
+          <div id="chart_div"></div>
+
+          <li>Gráfica: relación de objetos recogidos por puntuación final de los usuarios</li>
+        </ul>
+        <h4>IA enemiga</h4>
+        <ul>
+          <li>Promedio de detecciones de guardias por nivel</li>
+          <li>Mapa de calor de patrullas</li>
+          <li>Zonas de conflicto: Mapa de calor de patrullas superpuesto al mapa de calor del jugador</li>
+          <li>Promedio de guardias flasheados por nivel</li>
+        </ul>
+        <h4>Diseño del nivel</h4>
+        <ul>
+          <li>Mapa de calor general del nivel / camino promedio más usado por los jugadores</li>
+          <li>Porcentaje de cámaras desactivadas por nivel</li>
+          <li>Promedio de veces detectados por cámaras, por nivel</li>
+          <li>Porcentaje de carretes recogidos por nivel</li>
+          <li>Porcentaje de flashes recogidos por nivel</li>
+          <li>Tiempo promedio empleado en encontrar al famoso objetivo</li>
+        </ul>
+        <h4>Interfaz y usabilidad</h4>
+        <ul>
+          <li>Fotos utilizadas contra guardias (para comprobar si se distingue el botón de flash del de foto)</li>
+          <li>Fallos promedio durante el minijuego</li>
+          <li>Promedio de clicks de los jugadores durante las cinemáticas (Cálculo de la desesperación)</li>
+        </ul>
+
+
+
+
+        <h1>Nivel 1</h1>
+        <p>This page contains examples of all the styled elements available as part of this design. Use this page for reference, whilst you build your website.</p>
+        <h2>Headings</h2>
+        <p>These are the different heading formats:</p>
+        <h1>Heading 1</h1>
+        <h2>Heading 2</h2>
+        <h3>Heading 3</h3>
+        <h4>Heading 4</h4>
+        <h5>Heading 5</h5>
+        <h6>Heading 6</h6>
+        <h2>Text</h2>
+        <p>The following examples show how the text (within '&lt;p&gt;&lt;/p&gt;' tags) will appear:</p>
+        <p><strong>This is an example of bold text</strong></p>
+        <p><i>This is an example of italic text</i></p>
+        <p><a href="#">This is a hyperlink</a></p>
+        <h2>Lists</h2>
+        <p>This is an unordered list:</p>
+        <ul>
+          <li>Item 1</li>
+          <li>Item 2</li>
+          <li>Item 3</li>
+          <li>Item 4</li>
+        </ul>
+        <p>This is an ordered list:</p>
+        <ol>
+          <li>Item 1</li>
+          <li>Item 2</li>
+          <li>Item 3</li>
+          <li>Item 4</li>
+        </ol>
+        <h2>Images</h2>
+        <p>images can be placed on the left, in the center or on the right:</p>
+        <span class="left"><img src="style/graphic.png" alt="example graphic" /></span>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum.
+        </p>
+        <span class="center"><img src="style/graphic.png" alt="example graphic" /></span>
+        <span class="right"><img src="style/graphic.png" alt="example graphic" /></span>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur.
+        </p>
+        <h2>Tables</h2>
+        <p>Tables should be used to display data and not used for laying out your website:</p>
+        <table style="width:100%; border-spacing:0;">
+          <tr><th>Item</th><th>Description</th></tr>
+          <tr><td>Item 1</td><td>Description of Item 1</td></tr>
+          <tr><td>Item 2</td><td>Description of Item 2</td></tr>
+          <tr><td>Item 3</td><td>Description of Item 3</td></tr>
+          <tr><td>Item 4</td><td>Description of Item 4</td></tr>
+        </table>
+        <h2>Form Elements</h2>
+        <form action="#" method="post">
+          <div class="form_settings">
+            <p><span>Form field example</span><input type="text" name="name" value="" /></p>
+            <p><span>Textarea example</span><textarea rows="8" cols="50" name="name"></textarea></p>
+            <p><span>Checkbox example</span><input class="checkbox" type="checkbox" name="name" value="" /></p>
+            <p><span>Dropdown list example</span><select id="id" name="name"><option value="1">Example 1</option><option value="2">Example 2</option></select></p>
+            <p style="padding-top: 15px"><span>&nbsp;</span><input class="submit" type="submit" name="name" value="button" /></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_pink_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | free from html5webtemplates.co.uk
+    </div>
+  </div>
+</body>
+</html>
