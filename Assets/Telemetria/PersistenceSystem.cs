@@ -187,7 +187,7 @@ public class PersistenceSystem
 
         level3consts.tCarretes = 2;
         level3consts.tFlashes = 4;
-        level3consts.tCamaras = 2;
+        level3consts.tCamaras = 5;
         level3consts.tColeccionables = 5;
 
         levelConsts = new constLevelData[] { level1consts, level2consts, level3consts };
@@ -411,7 +411,7 @@ public class PersistenceSystem
 
         // Porcentaje flashes gastados
         processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
-            (levelConsts[currentIndex].tFlashes + 3), accumulatedDataWeight);
+            (levelConsts[currentIndex].tFlashes + 4), accumulatedDataWeight);
 
         // TODO: ACUMULAR MAPA CALOR MUERTE
 
@@ -520,7 +520,7 @@ public class PersistenceSystem
 
     private uint processPercentageMetric (uint accData, uint newData, uint levelConstData, float accWeight)
     {
-        uint pctPartidaActual = newData / levelConstData;
+        uint pctPartidaActual = (newData*100) / levelConstData;
         return (uint)Mathf.RoundToInt((accData * accWeight) +
             (pctPartidaActual * (1.0f - accWeight)));
     }
