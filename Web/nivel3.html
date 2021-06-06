@@ -235,7 +235,7 @@
           auxArray = [];
 
           // MATRICES
-          currentLine = lines[56]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          currentLine = lines[37]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
           auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
 		  
           for(var i = 0; i < auxSplitter.length; i++){
@@ -243,12 +243,12 @@
 			
             for(var j = 0; j < auxSplitter2.length; j++){
 			if (j < 100 && i < 100){
-              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+              mapaCalorNivel[i][99-j] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
 			  }
             }
           }
 		  
-		  currentLine = lines[57]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+		  currentLine = lines[38]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
           auxSplitter3 = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
 		  console.log(auxSplitter3.length);
           for(var i = 0; i < auxSplitter3.length; i++){
@@ -257,13 +257,13 @@
             for(var j = 0; j < auxSplitter4.length; j++){
 			if (j < 100 && i < 100){
 			console.log("dentro");
-              mapaMuertes[j][i] = parseFloat(auxSplitter4[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+              mapaMuertes[i][99-j] = parseFloat(auxSplitter4[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
 			  }
             }
           }
           // ACTUALIZAMOS LA WEB
-		  heatmap(250,250,173,0, mapaCalorNivel);
-		    heatmap(250,250,173,1150, mapaMuertes);
+		  heatmap(250,250,173,0, mapaMuertes);
+		  heatmap(250,250,200,1215, mapaCalorNivel);
           updateWebMetrics();
 
           document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
@@ -387,7 +387,7 @@ function initMatrices(){
         // create a heatmap instance
         var heatmap = h337.create({
           container: document.getElementById('heatmapContainer'),
-          maxOpacity: .3,
+          maxOpacity: .7,
           radius: 1,
           blur: .75,
           

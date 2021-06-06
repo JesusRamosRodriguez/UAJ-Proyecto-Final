@@ -243,7 +243,7 @@
 			
             for(var j = 0; j < auxSplitter2.length; j++){
 			if (j < 100 && i < 100){
-              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+              mapaCalorNivel[i][99-j] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
 			  }
             }
           }
@@ -257,15 +257,14 @@
             for(var j = 0; j < auxSplitter4.length; j++){
 			if (j < 100 && i < 100){
 			console.log("dentro");
-              mapaMuertes[j][i] = parseFloat(auxSplitter4[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+              mapaMuertes[i][99-j] = parseFloat(auxSplitter4[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
 			  }
             }
           }
           // ACTUALIZAMOS LA WEB
-		  heatmap(250,250,173,0, mapaCalorNivel);
-		    heatmap(250,250,173,1150, mapaMuertes);
+		  heatmap(250,250,173,0, mapaMuertes);
+		  heatmap(250,250,173,1204, mapaCalorNivel);
           updateWebMetrics();
-
           document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
         }
         reader.readAsText(file);
@@ -387,7 +386,7 @@ function initMatrices(){
         // create a heatmap instance
         var heatmap = h337.create({
           container: document.getElementById('heatmapContainer'),
-          maxOpacity: .3,
+          maxOpacity: .7,
           radius: 1,
           blur: .75,
           

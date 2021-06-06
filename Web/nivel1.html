@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
   <style>
       #heatmapContainerWrapper { width:100%; height:100%; position:absolute; }
-      #heatmapContainer { width:100%; height:100%;}
+      #heatmapContainer { width:100%; height:150%;}
     </style>
   
 </head>
@@ -264,8 +264,8 @@
             }
           }
           // ACTUALIZAMOS LA WEB
-		  heatmap(250,250,173,0, mapaCalorNivel);
-		  heatmap(250,250,163,1145, mapaMuertes);
+		  heatmap(250,250,173,0, mapaMuertes);
+		  heatmap(250,250,173,1143, mapaCalorNivel);
           updateWebMetrics();
 
           document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
