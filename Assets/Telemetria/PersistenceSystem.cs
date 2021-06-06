@@ -287,6 +287,13 @@ public class PersistenceSystem
         deathMapsMaxValue = new float[3];
         guardsMapsMaxValue = new float[3];
 
+        for (int i = 0; i < 3; i++)
+        {
+            playerMapsMaxValue[i] = 0.0f;
+            deathMapsMaxValue[i] = 0.0f;
+            deathMapsMaxValue[i] = 0.0f;
+        }
+
         return true;
     }
 
@@ -465,7 +472,7 @@ public class PersistenceSystem
             (levelConsts[currentIndex].tFlashes + 3), accumulatedDataWeight);
 
         // ACUMULAR MAPA CALOR MUERTE
-        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorMuertes, levelDatas[currentIndex].muertesJugador, accumulatedDataWeight, 2);
+        accumulateHeatMap(levelDatas[currentIndex].muertesJugador, accumulatedDataWeight, 2);
 
         // Gráfica Flashes-Muertes
         graphicsData flashesMuertes; flashesMuertes.valueX = levelDatas[currentIndex].flashes; flashesMuertes.valueY = levelDatas[currentIndex].muertes;
@@ -528,7 +535,7 @@ public class PersistenceSystem
                (levelDatas[currentIndex].deteccionesGuardia * (1.0f - accumulatedDataWeight));
 
         // ACUMULAR MAPA CALOR GUARDIAS
-        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorGuardias, levelDatas[currentIndex].posicionesGuardias, accumulatedDataWeight, 3);
+        accumulateHeatMap(levelDatas[currentIndex].posicionesGuardias, accumulatedDataWeight, 3);
 
         // Promedio guardias flasheados
         processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * accumulatedDataWeight) +
@@ -538,7 +545,7 @@ public class PersistenceSystem
     private void processDesignMetrics(int currentIndex, uint accumulatedSamples, float accumulatedDataWeight)
     {
         // ACUMULAR MAPA DE CALOR DEL NIVEL
-        accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorNivel, levelDatas[currentIndex].posicionesJugador, accumulatedDataWeight, 1);
+        accumulateHeatMap(levelDatas[currentIndex].posicionesJugador, accumulatedDataWeight, 1);
 
         // Porcentaje Camaras desactivadas
         processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeCamarasDesactivadas,
@@ -648,7 +655,7 @@ public class PersistenceSystem
         return true;
     }
 
-    private bool accumulateHeatMap (ref float[,] accumulatedMap, float [,] newMap, float accDataWeight, int flag)
+    private bool accumulateHeatMap (float [,] newMap, float accDataWeight, int flag)
     {
         // Igualamos todos los valores del mapa nuevo al rango [0, 100]
         float matrixMaxValue = 0.0f;
@@ -675,9 +682,23 @@ public class PersistenceSystem
                 {
                     if (newMap[i, j] > 0.0f) newMap[i, j] = rangeChange(newMap[i, j], 0, sizeX, 0, matrixMaxValue);
 
-                    // Procesamos dato en el mapa acumulado
-                    accumulatedMap[i, j] = (accumulatedMap[i, j] * accDataWeight) +
-                        (newMap[i, j] * (1.0f - accDataWeight));
+                    switch (flag)
+                    {
+                        case 1:
+                            processedLevelDatas[currentLevel - 1].mapaCalorNivel[i, j] = (processedLevelDatas[currentLevel - 1].mapaCalorNivel[i, j]
+                                * accDataWeight) + (newMap[i, j] * (1.0f - accDataWeight));
+                            break;
+                        case 2:
+                            processedLevelDatas[currentLevel - 1].mapaCalorMuertes[i, j] = (processedLevelDatas[currentLevel - 1].mapaCalorMuertes[i, j]
+                                * accDataWeight) + (newMap[i, j] * (1.0f - accDataWeight));
+                            break;
+                        case 3:
+                            processedLevelDatas[currentLevel - 1].mapaCalorGuardias[i, j] = (processedLevelDatas[currentLevel - 1].mapaCalorGuardias[i, j]
+                                * accDataWeight) + (newMap[i, j] * (1.0f - accDataWeight));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         } catch(System.IndexOutOfRangeException e)
