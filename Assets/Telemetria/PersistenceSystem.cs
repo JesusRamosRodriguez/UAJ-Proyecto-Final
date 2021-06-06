@@ -504,9 +504,9 @@ public class PersistenceSystem
             uint storedValue;
             if (processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.TryGetValue(id, out storedValue))
             {
-                uint newPercentage = (storedValue * accumulatedSamples) / (accumulatedSamples - 1);
+                uint newPercentage = (uint)Mathf.RoundToInt(((float)storedValue * accumulatedSamples) / (accumulatedSamples - 1));
             }
-            else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)(1 / accumulatedSamples));
+            else processedLevelDatas[currentIndex].porcentajeColeccionablesConcretos.Add(id, (uint)Mathf.RoundToInt(1 / (float)accumulatedSamples));
         }
 
         // Promedio tiempo nivel
