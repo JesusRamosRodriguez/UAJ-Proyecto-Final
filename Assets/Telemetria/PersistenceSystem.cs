@@ -92,7 +92,6 @@ public struct processedLevelData
         promedioFotosContraGuardias = 0.0f;
         promedioFallosMinijuego = 0.0f;
     }
-
 }
 
 public struct constLevelData
@@ -280,7 +279,6 @@ public class PersistenceSystem
         for (int i = 0; i < 3; i++)
         {
             playerMapsMaxValue[i] = 0.0f;
-            deathMapsMaxValue[i] = 0.0f;
             deathMapsMaxValue[i] = 0.0f;
         }
 
@@ -618,9 +616,9 @@ public class PersistenceSystem
 
         int adjustedX = Mathf.RoundToInt(rangeChange(x, oldMinX, oldMaxX, newMinX, newMaxX));
         int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, newMinY, newMaxY));
+
         heatMap[adjustedX, adjustedY] += heatMapIncrease;
-        
-        
+
         //if(flag == 1)Debug.LogError("Punto X: " + adjustedX + " Punto Y: " + adjustedY + " VALOR DE LA CASILLA ACTUAL: " + heatMap[adjustedX, adjustedY]);
 
         switch (flag)
@@ -631,7 +629,7 @@ public class PersistenceSystem
                     break;
             case 2:
                 if (heatMap[adjustedX, adjustedY] > deathMapsMaxValue[currentLevel - 1])
-                    playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
+                    deathMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
                 break;
             default:
                 break;
@@ -787,6 +785,29 @@ public class PersistenceSystem
                         processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
                     }
                 }
+
+                string [] xData;
+                xData = sr.ReadLine().Split(' ')[1].Split('|');
+                for (int x = 0; x < sizeX; x++)
+                {
+                    string[] yData = xData[x].Split('/');
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                      processedLevelDatas[lvl].mapaCalorNivel[x, y] = float.Parse(yData[y]);
+                    }
+                }
+
+                string[] xData2;
+                xData2 = sr.ReadLine().Split(' ')[1].Split('|');
+                for (int x = 0; x < sizeX; x++)
+                {
+                    string[] yData = xData2[x].Split('/');
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        processedLevelDatas[lvl].mapaCalorMuertes[x, y] = float.Parse(yData[y]);
+                    }
+                }
+
                 Debug.Log("(Decoder) succesfully decoded lvl " + (lvl + 1));
             }   
         }
@@ -836,6 +857,53 @@ public class PersistenceSystem
                         }
                     sw.Write('\n');
 
+                    sw.Write("PlayerPositions: ");
+                    if(processedLevelDatas[i].mapaCalorNivel.Length > 0)
+                    {
+                        bool ctrl = true;
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            for (int y = 0; y < sizeY; y++)
+                            {
+                                sw.Write(processedLevelDatas[i].mapaCalorNivel[x, y]);
+                                if ((y == (sizeY - 1)) && (x == (sizeX - 1)))
+                                {
+                                    ctrl = false;
+                                }
+                                else if (!(y == (sizeY - 1))) sw.Write("/");
+                            }
+                            if (ctrl)
+                            {
+                                sw.Write("|");
+                            }
+                        }
+                        sw.Write("\n");
+                    }
+
+                        
+
+                    sw.Write("DeathPositions: ");
+                    if (processedLevelDatas[i].mapaCalorMuertes.Length > 0)
+                    {
+                        bool ctrl = true;
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            for (int y = 0; y < sizeY; y++)
+                            {
+                                sw.Write(processedLevelDatas[i].mapaCalorMuertes[x, y]);
+                                if ((y == (sizeY - 1)) && (x == (sizeX - 1)))
+                                {
+                                    ctrl = false;                                        
+                                }
+                                else if(!(y == (sizeY - 1))) sw.Write("/");
+                            }
+                            if (ctrl)
+                            {
+                                sw.Write("|");
+                            }
+                        }
+                        sw.Write("\n");
+                    }
                     Debug.Log("Successfull encoding! lvl: " + (i + 1));
                 }
             }
