@@ -7,15 +7,23 @@ public class AcudeGuardia : MonoBehaviour {
     public GameObject go;
     Detect camara;
 
+    bool hasDetectedPlayer;
+
     private void Start()
     {
+        hasDetectedPlayer = false;
         camara = transform.parent.transform.GetChild(0).gameObject.GetComponent < Detect>();
     }
     private void Update()
     {
         if (camara.LeVeo() == true)
         {
-            TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
+            if (!hasDetectedPlayer)
+            {
+                TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
+                hasDetectedPlayer = true;
+            }
         }
+        hasDetectedPlayer = false;
     }
 }

@@ -22,12 +22,54 @@
 
   //Variables
 
-  var patatas = 69; 
-  var puntuacion = [10,50,30,20,69];
-  var tiempo = [86,49,58,38,67];
+
+	var totalSamples = 69; // número total de partidas acumuladas hasta ahora
+	var mapaCalorMuertes;
+	var promedioMuertes = 5.7;
+	var porcentajeFlashes = 75;
+	var graficaFlashesMuertes = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioPuntuacion = 5487.6;
+	var porcentajeColeccionables = 48;
+	var porcentajeColeccionablesConcretos = [ [21645149,55], [21645149,16], [21645149,24]
+	 [21645149,38], [216451490,87], ];;
+	var promedioTiempoNivel = 156.7;
+	var graficaTiempoPuntuacion = [ [1,5], [2,1], [3,0], [4,3], [5,8], ];
+	var graficaColeccionablesPuntuacion  = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioDetecciones = 12.8;
+	var mapaCalorGuardias;
+	var promedioGuardiasFlasheados = 3.5;
+
+	var mapaCalorNivel;
+	var porcentajeCamarasDesactivadas = 1.7;
+	var promedioDeteccionCamaras = 14.1;
+	var porcentajeCarretesRecogidos = 2.3;
+	var porcentajeFlashesRecogidos = 3.1;
+	var promedioTiempoEnHallarObjetivo = 78.4;
+
+	var promedioFotosContraGuardias = 2.1;
+	var promedioFallosMinijuego = 0.7;
+
+  var clicksCinematica = 1453415847;
 
   function main(){
-    document.getElementById("patatas").innerHTML = patatas;
+    document.getElementById("totalSamples").innerHTML = totalSamples;
+    document.getElementById("promedioMuertes").innerHTML = promedioMuertes;
+    document.getElementById("porcentajeFlashes").innerHTML = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").innerHTML = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").innerHTML = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").innerHTML = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").innerHTML = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").innerHTML = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").innerHTML = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").innerHTML = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").innerHTML = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").innerHTML = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").innerHTML = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").innerHTML = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").innerHTML = promedioFallosMinijuego;
+    document.getElementById("clicksCinematica").innerHTML = clicksCinematica;
   }
   //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
 
@@ -47,7 +89,11 @@
       data.addColumn('number', 'P');
 
       data.addRows([
-        [puntuacion[0],tiempo[0]], [puntuacion[1],tiempo[1]], [puntuacion[2],tiempo[2]], [puntuacion[3],tiempo[3]], [puntuacion[4],tiempo[4]],
+        [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
+        [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
+        [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
+        [graficaTiempoPuntuacion[3][0],graficaTiempoPuntuacion[3][1]],
+        [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
       ]);
 
       var options = {
@@ -91,17 +137,38 @@
       <div id="content">
         <!-- insert the page content here -->
 
-          
+          <!--  TODO: Meter <b> antes de cada referencia a las variables pa que salgan en bold  -->
+
+	<input type="file" name="inputfile"
+		id="inputfile">
+		<br>
+
+		<pre id="output"></pre>
+
+		<script type="text/javascript">
+			document.getElementById('inputfile')
+				.addEventListener('change', function() {
+
+			var fr=new FileReader();
+			fr.onload=function(){
+				document.getElementById('output')
+	    		.textContent=fr.result;
+	}
+
+	fr.readAsText(this.files[0]);
+	})
+	</script>
+
 
         <h1>Nivel 2</h1>
         <p> </p>
-        <h4>Partidas recopiladas hasta ahora: </h4><div id="patatas"></div>
+        <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
         <p> </p>
         <h4>Dificultad y equilibrado</h4>
         <p> </p>
         <ul>
-          <li>Promedio de muertes por jugador:  <script> document.write(5 + 6); </script></li>
-          <li>Porcentaje de flashes gastados por jugador: </li>
+          <li>Promedio de muertes por jugador:  <b><span id="promedioMuertes"></span></b></li>
+          <li>Porcentaje de flashes gastados por jugador: <b><span id="porcentajeFlashes"></span></b></li>
           <li>Mapa de calor de muertes: </li>
           <p> </p>
           <div id="MapaMuertesNivel2">
@@ -118,90 +185,39 @@
 
         <h4>Equilibrado del sistema de puntuación</h4>
         <ul>
-          <li>Puntuación total del usuario / puntuación promedio de usuarios</li>
-          <li>Porcentaje de objetos recogidos por nivel</li>
-          <li>Tiempo en completar un nivel / promedio de tiempo de los usuarios</li>
-          <li>Gráfica: relación de tiempo empleado en nivel por puntuación final de los usuarios</li>
+          <li>Puntuación promedio de jugadores: <span id="promedioPuntuacion"></span></li>
+          <li>Porcentaje de objetos recogidos por jugadores: <span id="porcentajeColeccionables"></span></li>
+          <li>Tiempo promedio en completar el nivel: <span id="promedioTiempoNivel"></span></li>
+          <li>Relación de tiempo empleado por puntuación final del nivel: </li>
 
           <!--Div that will hold the pie chart-->
           <div id="chart_div"></div>
 
-          <li>Gráfica: relación de objetos recogidos por puntuación final de los usuarios</li>
+          <li>Relación de objetos recogidos por puntuación final del nivel: </li>
         </ul>
         <h4>IA enemiga</h4>
         <ul>
-          <li>Promedio de detecciones de guardias por nivel</li>
+          <li>Promedio de detecciones por guardias: <span id="promedioDetecciones"></span></li>
+          <li>Promedio de guardias flasheados por nivel: <span id="promedioGuardiasFlasheados"></span></li>
           <li>Mapa de calor de patrullas</li>
           <li>Zonas de conflicto: Mapa de calor de patrullas superpuesto al mapa de calor del jugador</li>
-          <li>Promedio de guardias flasheados por nivel</li>
         </ul>
         <h4>Diseño del nivel</h4>
         <ul>
-          <li>Mapa de calor general del nivel / camino promedio más usado por los jugadores</li>
-          <li>Porcentaje de cámaras desactivadas por nivel</li>
-          <li>Promedio de veces detectados por cámaras, por nivel</li>
-          <li>Porcentaje de carretes recogidos por nivel</li>
-          <li>Porcentaje de flashes recogidos por nivel</li>
-          <li>Tiempo promedio empleado en encontrar al famoso objetivo</li>
+          <li>Porcentaje de cámaras desactivadas: <span id="porcentajeCamarasDesactivadas"></span></li>
+          <li>Promedio de detecciones por cámaras: <span id="promedioDeteccionCamaras"></span></li>
+          <li>Porcentaje de carretes recogidos: <span id="porcentajeCarretesRecogidos"></span></li>
+          <li>Porcentaje de flashes recogidos: <span id="porcentajeFlashesRecogidos"></span></li>
+          <li>Tiempo promedio en encontrar al famoso objetivo <span id="promedioTiempoEnHallarObjetivo"></span></li>
+          <li>Mapa de calor promedio de posiciones de jugadores: </li>
         </ul>
         <h4>Interfaz y usabilidad</h4>
         <ul>
-          <li>Fotos utilizadas contra guardias (para comprobar si se distingue el botón de flash del de foto)</li>
-          <li>Fallos promedio durante el minijuego</li>
-          <li>Promedio de clicks de los jugadores durante las cinemáticas (Cálculo de la desesperación)</li>
+          <li>Promedio de fotos utilizadas contra guardias: <span id="promedioFotosContraGuardias"></span></li>
+          <li>Promedio fallos durante el minijuego: <span id="promedioFallosMinijuego"></span></li>
+          <li>Promedio de clicks durante las cinemáticas (cálculo de la desesperación): <span id="clicksCinematica"></span></li>
         </ul>
 
-
-
-
-        <h1>Nivel 1</h1>
-        <p>This page contains examples of all the styled elements available as part of this design. Use this page for reference, whilst you build your website.</p>
-        <h2>Headings</h2>
-        <p>These are the different heading formats:</p>
-        <h1>Heading 1</h1>
-        <h2>Heading 2</h2>
-        <h3>Heading 3</h3>
-        <h4>Heading 4</h4>
-        <h5>Heading 5</h5>
-        <h6>Heading 6</h6>
-        <h2>Text</h2>
-        <p>The following examples show how the text (within '&lt;p&gt;&lt;/p&gt;' tags) will appear:</p>
-        <p><strong>This is an example of bold text</strong></p>
-        <p><i>This is an example of italic text</i></p>
-        <p><a href="#">This is a hyperlink</a></p>
-        <h2>Lists</h2>
-        <p>This is an unordered list:</p>
-        <ul>
-          <li>Item 1</li>
-          <li>Item 2</li>
-          <li>Item 3</li>
-          <li>Item 4</li>
-        </ul>
-        <p>This is an ordered list:</p>
-        <ol>
-          <li>Item 1</li>
-          <li>Item 2</li>
-          <li>Item 3</li>
-          <li>Item 4</li>
-        </ol>
-        <h2>Images</h2>
-        <p>images can be placed on the left, in the center or on the right:</p>
-        <span class="left"><img src="style/graphic.png" alt="example graphic" /></span>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-          irure dolor in reprehenderit in voluptate velit esse cillum.
-        </p>
-        <span class="center"><img src="style/graphic.png" alt="example graphic" /></span>
-        <span class="right"><img src="style/graphic.png" alt="example graphic" /></span>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur.
-        </p>
         <h2>Tables</h2>
         <p>Tables should be used to display data and not used for laying out your website:</p>
         <table style="width:100%; border-spacing:0;">
