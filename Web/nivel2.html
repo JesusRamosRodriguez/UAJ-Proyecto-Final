@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
   <style>
       #heatmapContainerWrapper { width:100%; height:100%; position:absolute; }
-      #heatmapContainer { width:100%; height:100%;}
+      #heatmapContainer { width:100%; height:150%;}
     </style>
   
 </head>
@@ -100,6 +100,12 @@
           <li>Porcentaje de flashes recogidos: <span id="porcentajeFlashesRecogidos"></span></li>
           <li>Tiempo promedio en encontrar al famoso objetivo <span id="promedioTiempoEnHallarObjetivo"></span></li>
           <li>Mapa de calor promedio de posiciones de jugadores: </li>
+          <p> </p>
+          <div id="MapaPosicionesNivel2">
+            <center><img src="Mapas/Level2.jpg" alt="Mapa de calor de posicion - Nivel 2" style="width:250px;height:250px;"></center>
+			
+          </div>
+          <p> </p>
         </ul>
         <h4>Interfaz y usabilidad</h4>
         <ul>
@@ -320,6 +326,8 @@
           }
   
   heatmap(250,250,170,0, m);
+  
+  heatmap(250,250,173,1150, m);
 
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
