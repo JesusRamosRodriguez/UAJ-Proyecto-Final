@@ -13,6 +13,7 @@ public class AcudeGuardia : MonoBehaviour {
     {
         hasDetectedPlayer = false;
         camara = transform.parent.transform.GetChild(0).gameObject.GetComponent < Detect>();
+        camara.GetComponent<Detect>().setCamera(true);
     }
     private void Update()
     {
@@ -20,7 +21,7 @@ public class AcudeGuardia : MonoBehaviour {
         {
             if (!hasDetectedPlayer)
             {
-                TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
+                //TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
                 hasDetectedPlayer = true;
             }
         }

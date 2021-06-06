@@ -7,14 +7,24 @@ public class Detect : MonoBehaviour {
 	public bool leVeo = false;//Si el guardia puede ver al jugador
 	public bool dentro = false;//Si el jugador esta dentro del campo de vision(No significa que le vea)
 
+	private bool isCamera = false;
+
 	public LayerMask whatToHit;//Que tiene encuenta el raycast(Paredes y jugador)
 
 	Rigidbody2D rb;
 
+	// TELEMETRIA
+
+	public void setCamera (bool set) { isCamera = set; }
+
+	// ----------------------
+
     void Start()
 	{
-		rb = GetComponentInParent<Rigidbody2D> ();     
-    }
+		rb = GetComponentInParent<Rigidbody2D> ();
+		isCamera = false;
+
+	}
 
 	private void FixedUpdate()
 	{
@@ -53,7 +63,8 @@ public class Detect : MonoBehaviour {
 		if (go.CompareTag("Player"))
         {
 			dentro = true;
-			TelemetrySystem.Instance.singleEvent("GuardiaDetectaJugador", GameManager.instance.getLevelNumber());
+			if(!isCamera)TelemetrySystem.Instance.singleEvent("GuardiaDetectaJugador", GameManager.instance.getLevelNumber());
+			else TelemetrySystem.Instance.singleEvent("CamaraDetectaJugador", GameManager.instance.getLevelNumber());
 		}
 	}
 

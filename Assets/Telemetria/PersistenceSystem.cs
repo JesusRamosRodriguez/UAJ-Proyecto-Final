@@ -62,6 +62,16 @@ public struct processedLevelData
         mapaCalorGuardias = new float[sizeX, sizeY];
         mapaCalorNivel = new float[sizeX, sizeY];
 
+        for(int i = 0; i < sizeX; i++)
+        {
+            for (int j = 0; i < sizeY; i++)
+            {
+                mapaCalorMuertes[i, j] = 0.0f;
+                mapaCalorGuardias[i, j] = 0.0f;
+                mapaCalorNivel[i, j] = 0.0f;
+            }
+        }
+
         promedioMuertes = 0.0f;
         porcentajeFlashes = 0;
         promedioPuntuacion = 0.0f;
@@ -172,10 +182,27 @@ public class PersistenceSystem
             posicionesJugador = new float[sizeX, sizeY];
             posicionesGuardias = new float[sizeX, sizeY];
 
+            for (int i = 0; i < sizeX; i++)
+            {
+                for (int j = 0; i < sizeY; i++)
+                {
+                    posicionesJugador[i, j] = 0.0f;
+                    posicionesGuardias[i, j] = 0.0f;
+                }
+            }
+
             if (flag)
             {
                 muertes = 0;
                 muertesJugador = new float[sizeX, sizeY];
+
+                for (int i = 0; i < sizeX; i++)
+                {
+                    for (int j = 0; i < sizeY; i++)
+                    {
+                        muertesJugador[i, j] = 0.0f;
+                    }
+                }
             }
         }
     }
@@ -435,7 +462,7 @@ public class PersistenceSystem
 
         // Porcentaje flashes gastados
         processedLevelDatas[currentIndex].porcentajeFlashes = processPercentageMetric(processedLevelDatas[currentIndex].porcentajeFlashes, levelDatas[currentIndex].flashes,
-            (levelConsts[currentIndex].tFlashes + 4), accumulatedDataWeight);
+            (levelConsts[currentIndex].tFlashes + 3), accumulatedDataWeight);
 
         // ACUMULAR MAPA CALOR MUERTE
         accumulateHeatMap(ref processedLevelDatas[currentIndex].mapaCalorMuertes, levelDatas[currentIndex].muertesJugador, accumulatedDataWeight, 2);
