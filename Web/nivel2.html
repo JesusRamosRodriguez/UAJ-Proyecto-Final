@@ -83,9 +83,11 @@
           <li>Relación de tiempo empleado por puntuación final del nivel: </li>
 
           <!--Div that will hold the pie chart-->
-          <div id="chart_div"></div>
+          <div id="chart_div2"></div>
 
           <li>Relación de objetos recogidos por puntuación final del nivel: </li>
+          <!--Div that will hold the pie chart-->
+          <div id="chart_div3"></div>
         </ul>
         <h4>IA enemiga</h4>
         <ul>
@@ -345,17 +347,47 @@ function initMatrices(){
   google.charts.setOnLoadCallback(drawChart);
   
 
+  google.charts.setOnLoadCallback(drawChart2);
+  google.charts.setOnLoadCallback(drawChart3);
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
   // draws it.
 
-
+  var data;
+var options;
+var chart;
   function drawChart() {
-    var data = new google.visualization.DataTable();
+    data = new google.visualization.DataTable();
       data.addColumn('number', 'X');
-      data.addColumn('number', 'P');
+      data.addColumn('number', 'F');
 
-      data.addRows([
+      for(var i = 0; i < graficaFlashesMuertes.length; i++){
+              data.addRows([[graficaFlashesMuertes[i][0],graficaFlashesMuertes[i][1]]]);
+      }
+
+      options = {
+        hAxis: {
+          title: 'Muertes'
+        },
+        vAxis: {
+          title: 'Flashes'
+        },
+        backgroundColor: '#f1f8e9'
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+  }
+
+  var data1;
+  var options1;
+  var chart1;
+  function drawChart2() {
+    data1 = new google.visualization.DataTable();
+      data1.addColumn('number', 'X');
+      data1.addColumn('number', 'P');
+
+      data1.addRows([
         [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
         [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
         [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
@@ -363,7 +395,7 @@ function initMatrices(){
         [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
       ]);
 
-      var options = {
+      options1 = {
         hAxis: {
           title: 'Tiempo'
         },
@@ -373,8 +405,37 @@ function initMatrices(){
         backgroundColor: '#f1f8e9'
       };
 
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
+      chart1 = new google.visualization.LineChart(document.getElementById('chart_div2'));
+      chart1.draw(data1, options1);
+  }
+  var data2;
+  var options2;
+  var chart2;
+  function drawChart3() {
+    data2 = new google.visualization.DataTable();
+      data2.addColumn('number', 'X');
+      data2.addColumn('number', 'P');
+
+      data2.addRows([
+        [graficaColeccionablesPuntuacion[0][0],graficaColeccionablesPuntuacion[0][1]],
+        [graficaColeccionablesPuntuacion[1][0],graficaColeccionablesPuntuacion[1][1]],
+        [graficaColeccionablesPuntuacion[2][0],graficaColeccionablesPuntuacion[2][1]],
+        [graficaColeccionablesPuntuacion[3][0],graficaColeccionablesPuntuacion[3][1]],
+        [graficaColeccionablesPuntuacion[4][0],graficaColeccionablesPuntuacion[4][1]],
+      ]);
+
+      options2 = {
+        hAxis: {
+          title: 'Objetos'
+        },
+        vAxis: {
+          title: 'Puntuación'
+        },
+        backgroundColor: '#f1f8e9'
+      };
+
+      chart2 = new google.visualization.LineChart(document.getElementById('chart_div3'));
+      chart2.draw(data2, options2);
   }
   
   function heatmap(tamx, tamy, posx, posy, mat){
