@@ -372,6 +372,7 @@ public class PersistenceSystem
         switch (e.eventName)
         {
             case "PlayerPosition":
+                Debug.Log("Pos: " + e.x + " " + e.y);
                 processPositions(ref levelDatas[currentLevel - 1].posicionesJugador, e.x, e.y, 1);
                 break;
             case "MuertePosition":
@@ -591,8 +592,8 @@ public class PersistenceSystem
 
                 break;
             case 2:
-                oldMinX = -29; oldMaxX = 87;
-                oldMinY = -79; oldMaxY = 17;
+                oldMinX = -29; oldMaxX = 44;
+                oldMinY = -56; oldMaxY = 38;
 
                 newMinX = 12; newMaxX = 88;
                 newMinY = 0; newMaxY = 100;
