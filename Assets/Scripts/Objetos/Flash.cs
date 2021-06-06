@@ -50,6 +50,10 @@ public class Flash : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            GameManager.instance.GoToPuntuacion();
+        }
 		if (!GameManager.instance.GameIsPaused() && GameManager.instance.PuedeFlash()) // Si el juego no está en PAUSA
         {
 			if (Input.GetKeyDown(KeyCode.Mouse0) && GameManager.instance.bombillas > 0)
