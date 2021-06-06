@@ -51,10 +51,12 @@ public struct processedLevelData
     public float promedioFallosMinijuego;
     #endregion
 
-    public void Reset(uint level, uint sizeX, uint sizeY) // True si queremos resetear TODO
+    public void Reset(uint level, uint sizeX, uint sizeY, bool fileExisted)
     {
         levelNumber = level;
-        totalSamples = 0;
+        if (fileExisted)
+            totalSamples--;
+        else totalSamples = 0;
 
         mapaCalorMuertes = new float[sizeX, sizeY];
         mapaCalorGuardias = new float[sizeX, sizeY];
@@ -247,7 +249,7 @@ public class PersistenceSystem
             levelDatas[i].Reset(i+1, sizeX, sizeY, true);
 
             processedLevelDatas[i] = new processedLevelData();
-            if (!DecodeLevel(i + 1)) processedLevelDatas[i].Reset(i + 1, sizeX, sizeY);
+            if (!DecodeLevel(i + 1)) processedLevelDatas[i].Reset(i + 1, sizeX, sizeY, FileExisted);
         }
 
         // Level constants
@@ -701,6 +703,16 @@ public class PersistenceSystem
 
     #region Decoder
 
+    private void DebugStatus()
+    {
+        Debug.Log("currentLevel: " + currentLevel);
+        Debug.Log("promedioClicksEnCinematica: " + promedioClicksEnCinematica);
+        Debug.Log("processedLevelDatas[0].totalSamples: " + processedLevelDatas[0].totalSamples);
+        Debug.Log("processedLevelDatas[0].promedioTiempoNivel: " + processedLevelDatas[0].promedioTiempoNivel);
+        Debug.Log("processedLevelDatas[0].promedioDetecciones: " + processedLevelDatas[0].promedioDetecciones);
+        Debug.Log("processedLevelDatas[0].promedioTiempoEnHallarObjetivo: " + processedLevelDatas[0].promedioTiempoEnHallarObjetivo);
+        Debug.Log("processedLevelDatas[0].promedioFallosMinijuego: " + processedLevelDatas[0].promedioFallosMinijuego);
+    }
     //  Auxiliar readers
     private uint GetuintFromPos(int pos) { return uint.Parse(sr.ReadLine().Split(':')[pos]); }
     private float GetfloatFromPos(int pos) { return float.Parse(sr.ReadLine().Split(':')[pos]); }
@@ -714,6 +726,8 @@ public class PersistenceSystem
             sr.DiscardBufferedData();
             sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
 
+            if (sr.EndOfStream) return false;
+
             s = sr.ReadLine();
 
             if (s == null)
@@ -724,12 +738,11 @@ public class PersistenceSystem
 
 
             while (s != "Lvl " + level) s = sr.ReadLine();
-            if (sr.EndOfStream) return false;
 
             //  Decodes..
             uint lvl = level - 1;
-            currentLevel = s[4];                                                               //  Lvl x
-            if(currentLevel == 1)promedioClicksEnCinematica = GetfloatFromPos(1);              // (just in lvl 1) promedioClicksEnCinematica: x
+            currentLevel = int.Parse(s.Split(' ')[1]);                                         //  Lvl x
+            if (currentLevel == 1) promedioClicksEnCinematica = GetfloatFromPos(1);            // (just in lvl 1) promedioClicksEnCinematica: x
             processedLevelDatas[lvl].totalSamples = GetuintFromPos(1);                         //  totalSamples:x
             processedLevelDatas[lvl].promedioMuertes = GetfloatFromPos(1);                     //  promedioMuertes:x
             processedLevelDatas[lvl].porcentajeFlashes = GetuintFromPos(1);                    //  porcentajeFlashes:x
@@ -750,11 +763,17 @@ public class PersistenceSystem
             string[] subs;
             string[] subs2;
             subs = sr.ReadLine().Split(' ');    // id1/% / id2/% /id3/%
-            for (int i = 1; i < subs.Length; i++)
+            if (subs[1] == null)
             {
-                subs2 = subs[i].Split('/');     // id1 / %
-                processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
+            Debug.Log("Entro!");
+                for (int i = 1; i < subs.Length; i++)
+                {
+                    subs2 = subs[i].Split('/');     // id1 / %
+                    processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
+                }
             }
+            Debug.Log("(Decoder) succesfully decoded lvl " + (lvl + 1));
+
         }
         catch  (System.Exception e)
         {
