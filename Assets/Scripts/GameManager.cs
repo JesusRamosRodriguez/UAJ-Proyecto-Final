@@ -353,7 +353,7 @@ public class GameManager : MonoBehaviour {
     public void Nivel1()
     {
         SceneManager.LoadScene("Nivel1");
-        /*if (nivel1.terminado || primeravez == 1)
+       /* if (nivel1.terminado || primeravez == 1)
             SceneManager.LoadScene("Nivel1");
         else
         {
@@ -751,6 +751,6 @@ public class GameManager : MonoBehaviour {
 
     public float tiempoMinijuego()
     {
-        return GameObject.FindWithTag("Crono").GetComponent<Cronometro>().devuelveTiempoGuardado();
+        return GameObject.FindWithTag("Crono").GetComponent<Cronometro>().TiempoAntes();
     }
 }
