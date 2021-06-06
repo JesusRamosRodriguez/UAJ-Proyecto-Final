@@ -7,7 +7,6 @@ public class CargaMinijuego : MonoBehaviour {
 		{
             if (col.gameObject.tag == "Player"&& !GameManager.instance.MinijuegoTerminado())
             {
-                Debug.Log("TiempoFamosoObjetivo: " + (int)GameManager.instance.tiempoMinijuego());
                 TelemetrySystem.Instance.valueEvent("TiempoFamosoObjetivo", (int)GameManager.instance.tiempoMinijuego(), GameManager.instance.getLevelNumber());
                 GameManager.instance.GoToMiniJuego();
             }

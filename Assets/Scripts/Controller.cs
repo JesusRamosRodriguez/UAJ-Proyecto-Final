@@ -32,7 +32,6 @@ public class Controller : MonoBehaviour {
         {
             TelemetrySystem.Instance.positionEvent("PlayerPosition", this.transform.position.x, 
                 this.transform.position.y, GameManager.instance.getLevelNumber());
-            Debug.LogError("X: " + this.transform.position.x + " Y: " + this.transform.position.y);
         }
         velocity = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * moveSpeed;//Movimiento
     }

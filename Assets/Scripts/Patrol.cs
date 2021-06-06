@@ -41,12 +41,6 @@ public class Patrol : MonoBehaviour {
 
     void Update()
     {
-        //if (TelemetrySystem.Instance.updateFrame() && this.gameObject.CompareTag("Guardia"))
-        //{
-        //    TelemetrySystem.Instance.positionEvent("GuardiaPosition", this.gameObject.transform.position.x,
-        //    this.gameObject.transform.position.y, GameManager.instance.getLevelNumber());
-        //    Debug.LogError("X: " + this.transform.position.x + " Y: " + this.transform.position.y + " Tag: " + this.gameObject.tag);
-        //}
             
         // Primero comprueba que sea un guardia y no un famoso el objeto que tiene este script
         if (!this.gameObject.CompareTag("Famoso") && transform.GetChild(0).GetComponent<Detect>().LeVeo()) 
