@@ -2722,6 +2722,10 @@ Prefab:
       propertyPath: m_Name
       value: Guardia Spray (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1030253680252568, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
   m_IsPrefabParent: 0
@@ -8374,6 +8378,10 @@ Prefab:
       propertyPath: patrolPoints.Array.data[5]
       value: 
       objectReference: {fileID: 931542308}
+    - target: {fileID: 1030253680252568, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
   m_IsPrefabParent: 0
@@ -10684,6 +10692,10 @@ Prefab:
       propertyPath: detectadoAudio
       value: 
       objectReference: {fileID: 8300000, guid: 8a77de8e564187f4ebcdeb7da58317a3, type: 3}
+    - target: {fileID: 1349826558826828, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
   m_IsPrefabParent: 0
@@ -12328,7 +12340,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4017417568762042, guid: bc895052ea5eab4489435e1cbee7629b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 20.839571
+      value: 20.839573
       objectReference: {fileID: 0}
     - target: {fileID: 4017417568762042, guid: bc895052ea5eab4489435e1cbee7629b, type: 2}
       propertyPath: m_LocalPosition.y
@@ -12753,7 +12765,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4523797744048908, guid: 3642fba2cb91f424d812a77d4a6bfc0c, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 20.839571
+      value: 20.839573
       objectReference: {fileID: 0}
     - target: {fileID: 4523797744048908, guid: 3642fba2cb91f424d812a77d4a6bfc0c, type: 2}
       propertyPath: m_LocalPosition.y
@@ -35772,6 +35784,10 @@ Prefab:
       propertyPath: detectadoAudio
       value: 
       objectReference: {fileID: 8300000, guid: 8a77de8e564187f4ebcdeb7da58317a3, type: 3}
+    - target: {fileID: 1349826558826828, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
   m_IsPrefabParent: 0
@@ -69151,6 +69167,10 @@ Prefab:
       propertyPath: detectadoAudio
       value: 
       objectReference: {fileID: 8300000, guid: 8a77de8e564187f4ebcdeb7da58317a3, type: 3}
+    - target: {fileID: 1349826558826828, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
   m_IsPrefabParent: 0

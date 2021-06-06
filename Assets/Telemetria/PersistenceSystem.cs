@@ -33,7 +33,6 @@ public struct processedLevelData
 
     #region IA Enemiga
     public float promedioDetecciones;
-    public float[,] mapaCalorGuardias;
     public float promedioGuardiasFlasheados;
     #endregion
 
@@ -54,7 +53,6 @@ public struct processedLevelData
     public void InitStructures(uint sizeX, uint sizeY)
     {
         mapaCalorMuertes = new float[sizeX, sizeY];
-        mapaCalorGuardias = new float[sizeX, sizeY];
         mapaCalorNivel = new float[sizeX, sizeY];
 
         porcentajeColeccionablesConcretos = new Dictionary<int, uint>();
@@ -75,7 +73,6 @@ public struct processedLevelData
             for (int j = 0; i < sizeY; i++)
             {
                 mapaCalorMuertes[i, j] = 0.0f;
-                mapaCalorGuardias[i, j] = 0.0f;
                 mapaCalorNivel[i, j] = 0.0f;
             }
         }
@@ -129,7 +126,6 @@ public class PersistenceSystem
     // Heat Maps
     float[] playerMapsMaxValue;
     float[] deathMapsMaxValue;
-    float[] guardsMapsMaxValue;
 
     //  Session data
     uint clicksEnCinematica = 0;
@@ -157,7 +153,6 @@ public class PersistenceSystem
         public int puntuacionFinal;
 
         public float[,] posicionesJugador;
-        public float[,] posicionesGuardias;
         public float[,] muertesJugador;  // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
 
         public Stack<int> coleccionables;  // id coleccionable recogido
@@ -182,14 +177,12 @@ public class PersistenceSystem
             coleccionables = new Stack<int>();
 
             posicionesJugador = new float[sizeX, sizeY];
-            posicionesGuardias = new float[sizeX, sizeY];
 
             for (int i = 0; i < sizeX; i++)
             {
                 for (int j = 0; i < sizeY; i++)
                 {
                     posicionesJugador[i, j] = 0.0f;
-                    posicionesGuardias[i, j] = 0.0f;
                 }
             }
 
@@ -287,7 +280,6 @@ public class PersistenceSystem
         // Heat Maps
         playerMapsMaxValue = new float[3];
         deathMapsMaxValue = new float[3];
-        guardsMapsMaxValue = new float[3];
 
         for (int i = 0; i < 3; i++)
         {
@@ -390,9 +382,6 @@ public class PersistenceSystem
                 break;
             case "MuertePosition":
                 processPositions(ref levelDatas[currentLevel - 1].muertesJugador, e.x, e.y, 2);
-                break;
-            case "GuardiaPosition":
-                processPositions(ref levelDatas[currentLevel - 1].posicionesGuardias, e.x, e.y, 3);
                 break;
             default:            
                 Debug.LogError("PersistenceSystem ha recibido un evento de tipo 'positionEvent' no reconocible. Id del evento: " + e.eventName);
@@ -538,9 +527,6 @@ public class PersistenceSystem
         processedLevelDatas[currentIndex].promedioDetecciones = (processedLevelDatas[currentIndex].promedioDetecciones * accumulatedDataWeight) +
                (levelDatas[currentIndex].deteccionesGuardia * (1.0f - accumulatedDataWeight));
 
-        // ACUMULAR MAPA CALOR GUARDIAS
-        accumulateHeatMap(levelDatas[currentIndex].posicionesGuardias, accumulatedDataWeight, 3);
-
         // Promedio guardias flasheados
         processedLevelDatas[currentIndex].promedioGuardiasFlasheados = (processedLevelDatas[currentIndex].promedioGuardiasFlasheados * accumulatedDataWeight) +
            (levelDatas[currentIndex].flashesAGuardias * (1.0f - accumulatedDataWeight));
@@ -603,23 +589,23 @@ public class PersistenceSystem
         switch (currentLevel)
         {
             case 1:
-                oldMinX = -29; oldMaxX = 75;
-                oldMinY = -69; oldMaxY = 35;
+                oldMinX = -85; oldMaxX = 18;
+                oldMinY = -41; oldMaxY = 61;
 
                 newMinX = 0; newMaxX = 100;
                 newMinY = 0; newMaxY = 100;
 
                 break;
             case 2:
-                oldMinX = 12; oldMaxX = 87;
+                oldMinX = -29; oldMaxX = 87;
                 oldMinY = -79; oldMaxY = 17;
 
                 newMinX = 12; newMaxX = 88;
                 newMinY = 0; newMaxY = 100;
                 break;
             case 3:
-                oldMinX = -71; oldMaxX = 49;
-                oldMinY = -16; oldMaxY = 46;
+                oldMinX = -23; oldMaxX = 96;
+                oldMinY = -11; oldMaxY = 56;
 
                 newMinX = 0; newMaxX = 100;
                 newMinY = 23; newMaxY = 77;
@@ -636,8 +622,10 @@ public class PersistenceSystem
 
         int adjustedX = Mathf.RoundToInt(rangeChange(x, oldMinX, oldMaxX, newMinX, newMaxX));
         int adjustedY = Mathf.RoundToInt(rangeChange(y, oldMinY, oldMaxY, newMinY, newMaxY));
-
         heatMap[adjustedX, adjustedY] += heatMapIncrease;
+        
+        
+        //if(flag == 1)Debug.LogError("Punto X: " + adjustedX + " Punto Y: " + adjustedY + " VALOR DE LA CASILLA ACTUAL: " + heatMap[adjustedX, adjustedY]);
 
         switch (flag)
         {
@@ -649,13 +637,10 @@ public class PersistenceSystem
                 if (heatMap[adjustedX, adjustedY] > deathMapsMaxValue[currentLevel - 1])
                     playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
                 break;
-            case 3:
-                if (heatMap[adjustedX, adjustedY] > guardsMapsMaxValue[currentLevel - 1])
-                    playerMapsMaxValue[currentLevel - 1] = heatMap[adjustedX, adjustedY];
-                break;
             default:
                 break;
         }
+
         return true;
     }
 
@@ -670,9 +655,6 @@ public class PersistenceSystem
                 break;
             case 2:
                 matrixMaxValue = deathMapsMaxValue[currentLevel - 1];
-                break;
-            case 3:
-                matrixMaxValue = guardsMapsMaxValue[currentLevel - 1];
                 break;
             default:
                 break;
@@ -694,10 +676,6 @@ public class PersistenceSystem
                             break;
                         case 2:
                             processedLevelDatas[currentLevel - 1].mapaCalorMuertes[i, j] = (processedLevelDatas[currentLevel - 1].mapaCalorMuertes[i, j]
-                                * accDataWeight) + (newMap[i, j] * (1.0f - accDataWeight));
-                            break;
-                        case 3:
-                            processedLevelDatas[currentLevel - 1].mapaCalorGuardias[i, j] = (processedLevelDatas[currentLevel - 1].mapaCalorGuardias[i, j]
                                 * accDataWeight) + (newMap[i, j] * (1.0f - accDataWeight));
                             break;
                         default:
@@ -744,9 +722,9 @@ public class PersistenceSystem
 
         if (reverseInput) {
             portion = (oldMax - x) * (newMax - newMin) / (oldMax - oldMin);
-            result = portion + newMin;
         }
-        if (reverseOutput) result = newMax - portion;
+        if (!reverseOutput) result = portion + newMin;
+        else result = newMax - portion;
         return result;
     }
     #endregion

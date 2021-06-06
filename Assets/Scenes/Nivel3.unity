@@ -67649,6 +67649,10 @@ Prefab:
       value: 
       objectReference: {fileID: 24300002, guid: b4f445608f92e2148bf8b675a70d979c,
         type: 2}
+    - target: {fileID: 1349826558826828, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
   m_IsPrefabParent: 0
@@ -70665,6 +70669,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030253680252568, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f643e5b7ed11e949b0943a7bb850558, type: 2}
   m_IsPrefabParent: 0
@@ -71008,6 +71016,10 @@ Prefab:
       value: 
       objectReference: {fileID: 24300002, guid: b4f445608f92e2148bf8b675a70d979c,
         type: 2}
+    - target: {fileID: 1349826558826828, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ffca2c121785fa64da32c1b5a86fa5be, type: 2}
   m_IsPrefabParent: 0
@@ -80819,6 +80831,10 @@ Prefab:
         type: 2}
       propertyPath: m_audioClip
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026439631607932, guid: 60b658fe4d7eb8c4ba62fb9b422a06d2, type: 2}
+      propertyPath: m_TagString
+      value: Guardia
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 60b658fe4d7eb8c4ba62fb9b422a06d2, type: 2}
