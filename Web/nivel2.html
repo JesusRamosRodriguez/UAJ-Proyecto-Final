@@ -1,13 +1,6 @@
 <!DOCTYPE HTML>
 <html>
 
-<!--Variables:-->
-<script>
-  
-  </script>
-
-
-
 <head>
   <title>Paparazzi Infiltration</title>
   <meta name="description" content="website description" />
@@ -53,7 +46,21 @@
 
   var clicksCinematica = 1453415847;
 
+  // FILE READER
+  var fr=new FileReader();
+
+  document.getElementById('inputfile').addEventListener('change', function() {
+    fr.onload=function(){
+      document.getElementById('output').textContent=fr.result;
+    }
+    fr.readAsText(this.files[0]);
+  })
+
+
+
+
   function main(){
+
     document.getElementById("totalSamples").innerHTML = totalSamples;
     document.getElementById("promedioMuertes").innerHTML = promedioMuertes;
     document.getElementById("porcentajeFlashes").innerHTML = porcentajeFlashes;
@@ -70,7 +77,16 @@
     document.getElementById("promedioFotosContraGuardias").innerHTML = promedioFotosContraGuardias;
     document.getElementById("promedioFallosMinijuego").innerHTML = promedioFallosMinijuego;
     document.getElementById("clicksCinematica").innerHTML = clicksCinematica;
+
+    
   }
+
+  function loadFile(){
+
+  }
+
+
+
   //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
 
   // Load the Visualization API and the corechart package.
@@ -139,27 +155,8 @@
 
           <!--  TODO: Meter <b> antes de cada referencia a las variables pa que salgan en bold  -->
 
-	<input type="file" name="inputfile"
-		id="inputfile">
-		<br>
-
-		<pre id="output"></pre>
-
-		<script type="text/javascript">
-			document.getElementById('inputfile')
-				.addEventListener('change', function() {
-
-			var fr=new FileReader();
-			fr.onload=function(){
-				document.getElementById('output')
-	    		.textContent=fr.result;
-	}
-
-	fr.readAsText(this.files[0]);
-	})
-	</script>
-
-
+        <input type="file" name="inputfile" id="inputfile"><br> 
+        <p> </p>
         <h1>Nivel 2</h1>
         <p> </p>
         <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
