@@ -118,14 +118,10 @@ public class TelemetrySystem{
     public void shutdown()
     {
         if (!isRunning) return;
-        //if (!threadIsStopped)
-        //{
-        //    telemetryThread.Join();
-        //}
-        levelEvent("FinSesion");
-        //ForcedUpdate();
-        persistence.ShutDown();
 
+        levelEvent("FinSesion");
+        persistence.ShutDown();
+      
         isRunning = false;
     }
 
