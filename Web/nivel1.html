@@ -1,13 +1,6 @@
 <!DOCTYPE HTML>
 <html>
 
-<!--Variables:-->
-<script>
-  
-  </script>
-
-
-
 <head>
   <title>Paparazzi Infiltration</title>
   <meta name="description" content="website description" />
@@ -18,6 +11,194 @@
 <!--Load the AJAX API-->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
+
+
+  //Variables
+
+
+	var totalSamples = 69; // número total de partidas acumuladas hasta ahora
+	var mapaCalorMuertes;
+	var promedioMuertes = 5.7;
+	var porcentajeFlashes = 75;
+	var graficaFlashesMuertes = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioPuntuacion = 5487.6;
+	var porcentajeColeccionables = 48;
+	var porcentajeColeccionablesConcretos = [ [21645149,55], [21645149,16], [21645149,24]
+	 [21645149,38], [216451490,87], ];;
+	var promedioTiempoNivel = 156.7;
+	var graficaTiempoPuntuacion = [ [1,5], [2,1], [3,0], [4,3], [5,8], ];
+	var graficaColeccionablesPuntuacion  = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioDetecciones = 12.8;
+	var mapaCalorGuardias;
+	var promedioGuardiasFlasheados = 3.5;
+
+	var mapaCalorNivel;
+	var porcentajeCamarasDesactivadas = 1.7;
+	var promedioDeteccionCamaras = 14.1;
+	var porcentajeCarretesRecogidos = 2.3;
+	var porcentajeFlashesRecogidos = 3.1;
+	var promedioTiempoEnHallarObjetivo = 78.4;
+
+	var promedioFotosContraGuardias = 2.1;
+	var promedioFallosMinijuego = 0.7;
+
+  var clicksCinematica = 1453415847;
+
+  function sortFunction(a, b) {
+    if (a[0] === b[0]) {
+      return 0;
+    }
+    else {
+      return (a[0] < b[0]) ? -1 : 1;
+    }
+  }
+
+  function fileDecoder(input){
+    //fr.onload=function(){
+      //document.getElementById('output').textContent=fr.result;
+
+      {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function() {
+          var lines = reader.result.split(/[\r\n]+/g); // tolerate both Windows and Unix linebreaks
+          console.log(lines.length);
+          console.log(lines[0]);
+          console.log("Lines es de tipo: " + typeof(lines[0]));
+
+          var currentLine = new String(lines[0]);
+          // COMPROBAMOS SI ARCHIVO CORRECTO
+          /*if(currentLine == "Lvl 1"){ // NO FUNCIONA; INTENTAD ARREGLARLO
+              document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR LINEA';
+              return 0;
+          }*/
+
+          if(lines.length < 35){
+            document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR TAMAÑO';
+            return 0;
+          }
+          // DESCODIFICAMOS
+
+          var splittedLine;
+
+          currentLine = lines[19]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 2
+          currentLine = lines[20]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
+          currentLine = lines[21]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
+          currentLine = lines[22]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
+          currentLine = lines[23]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
+          currentLine = lines[24]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
+          currentLine = lines[25]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
+          currentLine = lines[26]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
+          currentLine = lines[27]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
+          currentLine = lines[28]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
+          currentLine = lines[29]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[30]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[31]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
+          currentLine = lines[32]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
+          currentLine = lines[33]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
+          currentLine = lines[34]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
+
+          // GRAFICAS Y DICCIONARIOS (datos con pares) 
+          var auxSplitter;
+          var auxSplitter2;
+          var auxArray = [];
+          
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          for(var i = 1; i < splittedLine.length; i++){
+            auxSplitter = splittedLine[i].split('/');
+            auxArray.push([parseFloat(auxSplitter[0]), parseFloat(auxSplitter[1])]);
+          }
+          auxArray.sort(sortFunction);
+          graficaTiempoPuntuacion = auxArray; // CAMBIAR POR LA VARIABLE QUE ESTEIS TRATANDO 
+          auxArray = [];
+
+          // MATRICES
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
+          for(var i = 0; i < auxSplitter.length; i++){
+            auxSplitter2 = auxSplitter[i].split('/'); // ESTO ES UN ARRAY DE LAS COLUMNAS PARA X = i
+            for(var j = 0; j < auxSplitter2.length; j++){
+              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+            }
+          }
+
+          // ACTUALIZAMOS LA WEB
+          updateWebMetrics();
+
+          document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
+        }
+        //reader.readAsText(file);
+      
+    }
+    //fr.readAsText(this.files[0]);
+  //}
+  }
+
+  
+
+  function updateWebMetrics(){
+    document.getElementById("totalSamples").textContent = totalSamples;
+    document.getElementById("promedioMuertes").textContent = promedioMuertes;
+    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
+    document.getElementById("clicksCinematica").textContent = clicksCinematica;
+
+    console.log(totalSamples);
+  }
+
+
+  function main(){
+
+    //document.getElementById('inputfile').addEventListener('change', fileDecoder);
+
+    document.getElementById("totalSamples").textContent = totalSamples;
+    document.getElementById("promedioMuertes").textContent = promedioMuertes;
+    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
+    document.getElementById("clicksCinematica").textContent = clicksCinematica;
+
+
+    // INIT MATRICES
+    mapaCalorGuardias = new Array(100);
+    mapaCalorMuertes = new Array(100);
+    mapaCalorNivel = new Array(100);
+
+    for(var i = 0; i < 100; i++){
+      mapaCalorGuardias[i] = new Array(100);
+      mapaCalorMuertes[i] = new Array(100);
+      mapaCalorNivel[i] = new Array(100);
+    }
+  }
+
+  function loadFile(){
+
+  }
+
+
 
   //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
 
@@ -37,7 +218,11 @@
       data.addColumn('number', 'P');
 
       data.addRows([
-        [0,0],   [1, 10],  [2, 23],  [3, 17],  [4, 18],  [5, 9],
+        [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
+        [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
+        [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
+        [graficaTiempoPuntuacion[3][0],graficaTiempoPuntuacion[3][1]],
+        [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
       ]);
 
       var options = {
@@ -57,7 +242,7 @@
 
 </head>
 
-<body>
+<body onload="main()" src="/default.asp">
   <div id="main">
     <div id="header">
       <div id="logo">
@@ -81,106 +266,68 @@
       <div id="content">
         <!-- insert the page content here -->
 
-          
+          <!--  TODO: Meter <b> antes de cada referencia a las variables pa que salgan en bold  -->
 
+        <input type="file" name="inputfile" id="inputfile" onchange="fileDecoder(this)"><br><pre id="output"></pre> 
+        <p> </p>
         <h1>Nivel 1</h1>
+        <p> </p>
+        <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
+        <p> </p>
         <h4>Dificultad y equilibrado</h4>
+        <p> </p>
         <ul>
-          <li>Mapa de calor de muertes</li>
-          <li>Muertes por nivel / promedio de muertes:  <script> document.write(5 + 6); </script></li>
-
-          <li>Porcentaje de flashes gastados por nivel1</li>
-          <li>Gráfica: muertes promedio por flashes empleados en un nivel</li>
+          <li>Promedio de muertes por jugador:  <b><span id="promedioMuertes"></span></b></li>
+          <li>Porcentaje de flashes gastados por jugador: <b><span id="porcentajeFlashes"></span></b></li>
+          <li>Mapa de calor de muertes: </li>
+          <p> </p>
+          <div id="MapaMuertesNivel1">
+            <center><img src="Mapas/Level1.jpg" alt="Mapa de calor de muertes - Nivel 1" style="width:250px;height:250px;"></center>
+          </div>
+          <p> </p>
+          <li>Muertes promedio por flashes empleados: </li>
+          <p> </p>
+          <div id="chart_div"></div>
+          <p> </p>
         </ul>
 
         
 
         <h4>Equilibrado del sistema de puntuación</h4>
         <ul>
-          <li>Puntuación total del usuario / puntuación promedio de usuarios</li>
-          <li>Porcentaje de objetos recogidos por nivel</li>
-          <li>Tiempo en completar un nivel / promedio de tiempo de los usuarios</li>
-          <li>Gráfica: relación de tiempo empleado en nivel por puntuación final de los usuarios</li>
+          <li>Puntuación promedio de jugadores: <span id="promedioPuntuacion"></span></li>
+          <li>Porcentaje de objetos recogidos por jugadores: <span id="porcentajeColeccionables"></span></li>
+          <li>Tiempo promedio en completar el nivel: <span id="promedioTiempoNivel"></span></li>
+          <li>Relación de tiempo empleado por puntuación final del nivel: </li>
 
           <!--Div that will hold the pie chart-->
           <div id="chart_div"></div>
 
-          <li>Gráfica: relación de objetos recogidos por puntuación final de los usuarios</li>
+          <li>Relación de objetos recogidos por puntuación final del nivel: </li>
         </ul>
         <h4>IA enemiga</h4>
         <ul>
-          <li>Promedio de detecciones de guardias por nivel</li>
+          <li>Promedio de detecciones por guardias: <span id="promedioDetecciones"></span></li>
+          <li>Promedio de guardias flasheados por nivel: <span id="promedioGuardiasFlasheados"></span></li>
           <li>Mapa de calor de patrullas</li>
           <li>Zonas de conflicto: Mapa de calor de patrullas superpuesto al mapa de calor del jugador</li>
-          <li>Promedio de guardias flasheados por nivel</li>
         </ul>
         <h4>Diseño del nivel</h4>
         <ul>
-          <li>Mapa de calor general del nivel / camino promedio más usado por los jugadores</li>
-          <li>Porcentaje de cámaras desactivadas por nivel</li>
-          <li>Promedio de veces detectados por cámaras, por nivel</li>
-          <li>Porcentaje de carretes recogidos por nivel</li>
-          <li>Porcentaje de flashes recogidos por nivel</li>
-          <li>Tiempo promedio empleado en encontrar al famoso objetivo</li>
+          <li>Porcentaje de cámaras desactivadas: <span id="porcentajeCamarasDesactivadas"></span></li>
+          <li>Promedio de detecciones por cámaras: <span id="promedioDeteccionCamaras"></span></li>
+          <li>Porcentaje de carretes recogidos: <span id="porcentajeCarretesRecogidos"></span></li>
+          <li>Porcentaje de flashes recogidos: <span id="porcentajeFlashesRecogidos"></span></li>
+          <li>Tiempo promedio en encontrar al famoso objetivo <span id="promedioTiempoEnHallarObjetivo"></span></li>
+          <li>Mapa de calor promedio de posiciones de jugadores: </li>
         </ul>
         <h4>Interfaz y usabilidad</h4>
         <ul>
-          <li>Fotos utilizadas contra guardias (para comprobar si se distingue el botón de flash del de foto)</li>
-          <li>Fallos promedio durante el minijuego</li>
-          <li>Promedio de clicks de los jugadores durante las cinemáticas (Cálculo de la desesperación)</li>
+          <li>Promedio de fotos utilizadas contra guardias: <span id="promedioFotosContraGuardias"></span></li>
+          <li>Promedio fallos durante el minijuego: <span id="promedioFallosMinijuego"></span></li>
+          <li>Promedio de clicks durante las cinemáticas (cálculo de la desesperación): <span id="clicksCinematica"></span></li>
         </ul>
 
-
-
-
-        <h1>Nivel 1</h1>
-        <p>This page contains examples of all the styled elements available as part of this design. Use this page for reference, whilst you build your website.</p>
-        <h2>Headings</h2>
-        <p>These are the different heading formats:</p>
-        <h1>Heading 1</h1>
-        <h2>Heading 2</h2>
-        <h3>Heading 3</h3>
-        <h4>Heading 4</h4>
-        <h5>Heading 5</h5>
-        <h6>Heading 6</h6>
-        <h2>Text</h2>
-        <p>The following examples show how the text (within '&lt;p&gt;&lt;/p&gt;' tags) will appear:</p>
-        <p><strong>This is an example of bold text</strong></p>
-        <p><i>This is an example of italic text</i></p>
-        <p><a href="#">This is a hyperlink</a></p>
-        <h2>Lists</h2>
-        <p>This is an unordered list:</p>
-        <ul>
-          <li>Item 1</li>
-          <li>Item 2</li>
-          <li>Item 3</li>
-          <li>Item 4</li>
-        </ul>
-        <p>This is an ordered list:</p>
-        <ol>
-          <li>Item 1</li>
-          <li>Item 2</li>
-          <li>Item 3</li>
-          <li>Item 4</li>
-        </ol>
-        <h2>Images</h2>
-        <p>images can be placed on the left, in the center or on the right:</p>
-        <span class="left"><img src="style/graphic.png" alt="example graphic" /></span>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-          irure dolor in reprehenderit in voluptate velit esse cillum.
-        </p>
-        <span class="center"><img src="style/graphic.png" alt="example graphic" /></span>
-        <span class="right"><img src="style/graphic.png" alt="example graphic" /></span>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur.
-        </p>
         <h2>Tables</h2>
         <p>Tables should be used to display data and not used for laying out your website:</p>
         <table style="width:100%; border-spacing:0;">

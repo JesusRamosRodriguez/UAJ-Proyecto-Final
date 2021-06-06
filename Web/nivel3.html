@@ -62,8 +62,8 @@
           <li>Porcentaje de flashes gastados por jugador: <b><span id="porcentajeFlashes"></span></b></li>
           <li>Mapa de calor de muertes: </li>
           <p> </p>
-          <div id="MapaMuertesNivel2">
-            <center><img src="Mapas/Level2.jpg" alt="Mapa de calor de muertes - Nivel 2" style="width:250px;height:250px;"></center>
+          <div id="MapaMuertesNivel3">
+            <center><img src="Mapas/Level3.jpg" alt="Mapa de calor de muertes - Nivel 3" style="width:250px;height:250px;"></center>
           </div>
           <p> </p>
           <li>Muertes promedio por flashes empleados: </li>
@@ -106,7 +106,6 @@
         <ul>
           <li>Promedio de fotos utilizadas contra guardias: <span id="promedioFotosContraGuardias"></span></li>
           <li>Promedio fallos durante el minijuego: <span id="promedioFallosMinijuego"></span></li>
-          <li>Promedio de clicks durante las cinemáticas (cálculo de la desesperación): <span id="clicksCinematica"></span></li>
         </ul>
 
         <h2>Tables</h2>
@@ -174,6 +173,16 @@
 	var promedioFallosMinijuego = 0.7;
 
   var clicksCinematica = 1453415847;
+  
+  
+  function sortFunction(a, b) {
+    if (a[0] === b[0]) {
+      return 0;
+    }
+    else {
+      return (a[0] < b[0]) ? -1 : 1;
+    }
+  }
 
   function fileDecoder(input){
     //fr.onload=function(){
@@ -203,7 +212,7 @@
 
           var splittedLine;
 
-          currentLine = lines[36]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1].valueOf()); // Primera linea de datos Nivel 3
+          currentLine = lines[36]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 3
           currentLine = lines[37]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
           currentLine = lines[38]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
           currentLine = lines[39]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
@@ -220,11 +229,36 @@
           currentLine = lines[50]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
           currentLine = lines[51]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
 
+		  // GRAFICAS Y DICCIONARIOS (datos con pares) 
+          var auxSplitter;
+          var auxSplitter2;
+          var auxArray = [];
+          
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          for(var i = 1; i < splittedLine.length; i++){
+            auxSplitter = splittedLine[i].split('/');
+            auxArray.push([parseFloat(auxSplitter[0]), parseFloat(auxSplitter[1])]);
+          }
+          auxArray.sort(sortFunction);
+          graficaTiempoPuntuacion = auxArray; // CAMBIAR POR LA VARIABLE QUE ESTEIS TRATANDO 
+          auxArray = [];
+
+          // MATRICES
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
+          for(var i = 0; i < auxSplitter.length; i++){
+            auxSplitter2 = auxSplitter[i].split('/'); // ESTO ES UN ARRAY DE LAS COLUMNAS PARA X = i
+            for(var j = 0; j < auxSplitter2.length; j++){
+              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+            }
+          }
+
+          // ACTUALIZAMOS LA WEB
           updateWebMetrics();
 
-          document.getElementById('output').textContent = 'CARGADO';
+          document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
         }
-        reader.readAsText(file);
+        //reader.readAsText(file);
       
     }
     //fr.readAsText(this.files[0]);
@@ -277,6 +311,16 @@
     document.getElementById("promedioFallosMinijuego").innerHTML = promedioFallosMinijuego;
     document.getElementById("clicksCinematica").innerHTML = clicksCinematica;
 
+	// INIT MATRICES
+    mapaCalorGuardias = new Array(100);
+    mapaCalorMuertes = new Array(100);
+    mapaCalorNivel = new Array(100);
+
+    for(var i = 0; i < 100; i++){
+      mapaCalorGuardias[i] = new Array(100);
+      mapaCalorMuertes[i] = new Array(100);
+      mapaCalorNivel[i] = new Array(100);
+    }
     
   }
 
