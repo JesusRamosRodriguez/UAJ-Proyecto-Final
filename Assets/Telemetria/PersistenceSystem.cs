@@ -117,6 +117,7 @@ public class PersistenceSystem
     int currentLevel = 1;
 
     bool FileExisted = false;
+
     #region DataManagement
 
     //  Const data (total)
@@ -133,7 +134,7 @@ public class PersistenceSystem
 
     //  Session data
     uint clicksEnCinematica = 0;
-    float promedioClicksEnCinematica = 0; // EL DATO ACUMULADO, habría que descodificarlo/cargarlo en el init
+    float promedioClicksEnCinematica = 0;
 
     //  Raw level data
     struct levelData
@@ -149,7 +150,7 @@ public class PersistenceSystem
         public uint flashesRecogidos;
         public uint fotosRecogidas;
         public uint fallosMinijuego;
-        public uint muertes; // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
+        public uint muertes;
         public uint deteccionesGuardia;
         public uint deteccionesCamara;
         public uint tiempoPartida;
@@ -158,7 +159,7 @@ public class PersistenceSystem
 
         public float[,] posicionesJugador;
         public float[,] posicionesGuardias;
-        public float[,] muertesJugador;  // NO SE BORRA AL MORIR o reiniciar | SÍ AL ACABAR
+        public float[,] muertesJugador;
 
         public Stack<int> coleccionables;  // id coleccionable recogido
 
@@ -238,22 +239,16 @@ public class PersistenceSystem
     static string FILEPATH = @".\Telemetria\";
     static string FILEGENERAL = @".\Telemetria\general.txt";
 
-    //  Streams
-    /*private FileStream fs;
-    private StreamReader sr;
-    private StreamWriter sw;*/
+    private bool OpenFile ()                        //  Opens input/output file (reading/writting) if it isn't already openned 
+    {                                               //  ¡After I/O overhaul it just creates the folder and general file if they don't exist
+                                                    //  and updates a flag
 
-    private bool OpenFile ()    //Opens input/output file (reading/writting) if it isn't already openned
-    {
-        if(!Directory.Exists(FILEPATH))            //Creates upper folder 
+        if (!Directory.Exists(FILEPATH))            //  Creates upper folder 
             Directory.CreateDirectory(FILEPATH);   
 
-        //  Opens the i/o stream
         try
         {
             if (File.Exists(FILEPATH)) FileExisted = true;
-            /*fs = new FileStream(FILEGENERAL, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-            sr = new StreamReader(fs);*/
         }
         catch (System.Exception e)
         {
