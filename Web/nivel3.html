@@ -178,7 +178,6 @@
   // FILE READER
   var fr=new FileReader();
 
-  heatmap();
   
   document.getElementById('inputfile').addEventListener('change', function() {
     fr.onload=function(){
@@ -216,7 +215,6 @@
 
   }
 
-heatmap();
 
   //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
 
@@ -225,7 +223,16 @@ heatmap();
   // Set a callback to run when the Google Visualization API is loaded.
   google.charts.setOnLoadCallback(drawChart);
   
-  heatmap();
+  var m =Array(100).fill(Array(100));
+  
+  for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = Math.random() * 100;
+				m[i][j] = x;
+			}
+          }
+  
+  heatmap(250,250,173,384, m);
 
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
@@ -260,7 +267,7 @@ heatmap();
   }
   
   <!------Pintado heatmaps------>
-  function heatmap(){
+  function heatmap(tamx, tamy, posx, posy, mat){
   // helper function
         function $(id) {
           return document.getElementById(id);
@@ -271,42 +278,41 @@ heatmap();
         var heatmap = h337.create({
           container: document.getElementById('heatmapContainer'),
           maxOpacity: .4,
-          radius: .5,
+          radius: 1,
           blur: .75,
           
         });
 
         // boundaries for data generation
-        var width = 150;
-        var height = 150;
+        var width = tamx;
+        var height = tamy;
 
         // generate 1000 datapoints
         var generate = function() {
-		console.log("xd");
+		
           // randomly generate extremas
-          var extremas = [(Math.random() * 1000) >> 0,(Math.random() * 1000) >> 0];
-          var max = Math.max.apply(Math, extremas);
-          var min = Math.min.apply(Math,extremas);
+         
+          var max = 100;
+          var min = 0;
           var t = [];
 
 
-          for (var i = 0; i < 20; i++) {
-            var x = (Math.random()* width + 220) >> 0;
-            var y = (Math.random()* height + 440) >> 0;
-            var c = ((Math.random()* max-min) >> 0) + min;
-            // btw, we can set a radius on a point basis
-            var r = (Math.random()* 80) >> 0;
-            // add to dataset
-            t.push({ x: x, y:y, value: c, radius: r });
+          for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = i / 100 * tamx + posx;
+				var y = j / 100 * tamy + posy;
+				var c = mat[i][j];
+				// btw, we can set a radius on a point basis
+				
+				// add to dataset
+				t.push({ x: x, y:y, value: c, radius: 4 });
+			}
           }
-          var init = +new Date;
-          // set the generated dataset
           heatmap.setData({
             min: min,
             max: max,
             data: t
           });
-          console.log('took ', (+new Date) - init, 'ms');
         };
         // initial generate
         generate();
