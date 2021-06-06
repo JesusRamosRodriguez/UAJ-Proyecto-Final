@@ -1,21 +1,21 @@
 Lvl 1
-promedioClicksEnCinematica: 0
+promedioClicksEnCinematica: 20
 totalSamples: 1
 promedioMuertes: 0
-porcentajeFlashes: 0
-promedioPuntuacion: 4040
+porcentajeFlashes: 25
+promedioPuntuacion: 2140
 porcentajeColeccionables: 0
-promedioTiempoNivel: 91
+promedioTiempoNivel: 55
 promedioDetecciones: 12
-promedioGuardiasFlasheados: 3
-porcentajeCamarasDesactivadas: 0
-promedioDeteccionCamaras: 187
+promedioGuardiasFlasheados: 2
+porcentajeCamarasDesactivadas: 25
+promedioDeteccionCamaras: 22
 porcentajeCarretesRecogidos: 0
 porcentajeFlashesRecogidos: 0
 promedioTiempoEnHallarObjetivo: 0
 promedioFotosContraGuardias: 0
 promedioFallosMinijuego: 1
-porcentajeColeccionablesConcretos: -126410-1 -126392-1 
+porcentajeColeccionablesConcretos: 
 Lvl 2
 totalSamples: 0
 promedioMuertes: 0
@@ -50,3 +50,4 @@ promedioTiempoEnHallarObjetivo: 0
 promedioFotosContraGuardias: 0
 promedioFallosMinijuego: 0
 porcentajeColeccionablesConcretos: 
+eColeccionablesConcretos: 
