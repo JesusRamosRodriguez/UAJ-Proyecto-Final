@@ -49,9 +49,9 @@
 
           <!--  TODO: Meter <b> antes de cada referencia a las variables pa que salgan en bold  -->
 
-        <input type="file" name="inputfile" id="inputfile"><br> 
+        <input type="file" name="inputfile" id="inputfile" onchange="fileDecoder(this)"><br><pre id="output"></pre> 
         <p> </p>
-        <h1>Nivel 2</h1>
+        <h1>Nivel 3</h1>
         <p> </p>
         <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
         <p> </p>
@@ -175,17 +175,85 @@
 
   var clicksCinematica = 1453415847;
 
-  // FILE READER
-  var fr=new FileReader();
+  function fileDecoder(input){
+    //fr.onload=function(){
+      //document.getElementById('output').textContent=fr.result;
 
-  heatmap();
-  
-  document.getElementById('inputfile').addEventListener('change', function() {
-    fr.onload=function(){
-      document.getElementById('output').textContent=fr.result;
+      {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function() {
+          var lines = reader.result.split(/[\r\n]+/g); // tolerate both Windows and Unix linebreaks
+          console.log(lines.length);
+          console.log(lines[0]);
+          console.log("Lines es de tipo: " + typeof(lines[0]));
+
+          var currentLine = new String(lines[0]);
+          // COMPROBAMOS SI ARCHIVO CORRECTO
+          /*if(currentLine == "Lvl 1"){ // NO FUNCIONA; INTENTAD ARREGLARLO
+              document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR LINEA';
+              return 0;
+          }*/
+
+          if(lines.length < 35){
+            document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR TAMAÑO';
+            return 0;
+          }
+          // DESCODIFICAMOS
+
+          var splittedLine;
+
+          currentLine = lines[36]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1].valueOf()); // Primera linea de datos Nivel 3
+          currentLine = lines[37]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
+          currentLine = lines[38]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
+          currentLine = lines[39]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
+          currentLine = lines[40]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
+          currentLine = lines[41]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
+          currentLine = lines[42]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
+          currentLine = lines[43]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
+          currentLine = lines[44]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
+          currentLine = lines[45]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
+          currentLine = lines[46]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[47]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[48]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
+          currentLine = lines[49]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
+          currentLine = lines[50]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
+          currentLine = lines[51]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
+
+          updateWebMetrics();
+
+          document.getElementById('output').textContent = 'CARGADO';
+        }
+        reader.readAsText(file);
+      
     }
-    fr.readAsText(this.files[0]);
-  })
+    //fr.readAsText(this.files[0]);
+  //}
+  }
+
+  
+
+  function updateWebMetrics(){
+    document.getElementById("totalSamples").textContent = totalSamples;
+    document.getElementById("promedioMuertes").textContent = promedioMuertes;
+    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
+    document.getElementById("clicksCinematica").textContent = clicksCinematica;
+
+    console.log(totalSamples);
+  }
+
 
 
 
@@ -216,7 +284,6 @@
 
   }
 
-heatmap();
 
   //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
 
@@ -225,7 +292,16 @@ heatmap();
   // Set a callback to run when the Google Visualization API is loaded.
   google.charts.setOnLoadCallback(drawChart);
   
-  heatmap();
+  var m =Array(100).fill(Array(100));
+  
+  for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = Math.random() * 100;
+				m[i][j] = x;
+			}
+          }
+  
+  heatmap(250,250,173,384, m);
 
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
@@ -260,7 +336,7 @@ heatmap();
   }
   
   <!------Pintado heatmaps------>
-  function heatmap(){
+  function heatmap(tamx, tamy, posx, posy, mat){
   // helper function
         function $(id) {
           return document.getElementById(id);
@@ -271,42 +347,41 @@ heatmap();
         var heatmap = h337.create({
           container: document.getElementById('heatmapContainer'),
           maxOpacity: .4,
-          radius: .5,
+          radius: 1,
           blur: .75,
           
         });
 
         // boundaries for data generation
-        var width = 150;
-        var height = 150;
+        var width = tamx;
+        var height = tamy;
 
         // generate 1000 datapoints
         var generate = function() {
-		console.log("xd");
+		
           // randomly generate extremas
-          var extremas = [(Math.random() * 1000) >> 0,(Math.random() * 1000) >> 0];
-          var max = Math.max.apply(Math, extremas);
-          var min = Math.min.apply(Math,extremas);
+         
+          var max = 100;
+          var min = 0;
           var t = [];
 
 
-          for (var i = 0; i < 20; i++) {
-            var x = (Math.random()* width + 220) >> 0;
-            var y = (Math.random()* height + 440) >> 0;
-            var c = ((Math.random()* max-min) >> 0) + min;
-            // btw, we can set a radius on a point basis
-            var r = (Math.random()* 80) >> 0;
-            // add to dataset
-            t.push({ x: x, y:y, value: c, radius: r });
+          for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = i / 100 * tamx + posx;
+				var y = j / 100 * tamy + posy;
+				var c = mat[i][j];
+				// btw, we can set a radius on a point basis
+				
+				// add to dataset
+				t.push({ x: x, y:y, value: c, radius: 4 });
+			}
           }
-          var init = +new Date;
-          // set the generated dataset
           heatmap.setData({
             min: min,
             max: max,
             data: t
           });
-          console.log('took ', (+new Date) - init, 'ms');
         };
         // initial generate
         generate();
