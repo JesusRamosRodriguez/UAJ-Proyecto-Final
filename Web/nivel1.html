@@ -37,12 +37,7 @@
       </div>
     </div>
     <div id="site_content">
-	<div id="heatmapContainerWrapper">
-      <div id="heatmapContainer">
-
-      </div>
-      
-    </div>
+	
       <div id="content">
         <!-- insert the page content here -->
 
@@ -61,8 +56,15 @@
           <li>Porcentaje de flashes gastados por jugador: <b><span id="porcentajeFlashes"></span></b></li>
           <li>Mapa de calor de muertes: </li>
           <p> </p>
+		  <div id="heatmapContainerWrapper">
+			<div id="heatmapContainer">
+
+			</div>
+      
+			</div>
           <div id="MapaMuertesNivel1">
             <center><img src="Mapas/Level1.jpg" alt="Mapa de calor de muertes - Nivel 1" style="width:250px;height:250px;"></center>
+			
           </div>
           <p> </p>
           <li>Muertes promedio por flashes empleados: </li>
@@ -324,7 +326,7 @@
 			}
           }
   
-  heatmap(250,250,173,384, m);
+  heatmap(250,250,173,0, m);
 
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
