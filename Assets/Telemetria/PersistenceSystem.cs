@@ -101,6 +101,8 @@ public class PersistenceSystem
     const float heatMapIncrease = 0.01f;
 
     int currentLevel = 1;
+
+    bool FileExisted = false;
     #region DataManagement
 
     //  Const data (total)
@@ -218,6 +220,7 @@ public class PersistenceSystem
         //  Opens the i/o stream
         try
         {
+            if (File.Exists(FILEPATH)) FileExisted = true;
             fs = new FileStream(FILEGENERAL, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             sw = new StreamWriter(fs);
             sr = new StreamReader(fs);
@@ -371,7 +374,7 @@ public class PersistenceSystem
                 if (ProcessCurrentLevel()) return Encode();
                 break;
             case "Reinicio":
-                levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY, true);
+                levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY);
                 break;
             case "AbandonoNivel":
                 levelDatas[currentLevel - 1].Reset((uint)currentLevel, sizeX, sizeY);
@@ -409,7 +412,7 @@ public class PersistenceSystem
             if(currentLevel == 1)
             {
                 promedioClicksEnCinematica = (promedioClicksEnCinematica * accumulatedDataWeight) +
-            (clicksEnCinematica * (1.0f - accumulatedDataWeight));
+                (clicksEnCinematica * (1.0f - accumulatedDataWeight));
             }
 
         }
@@ -707,11 +710,10 @@ public class PersistenceSystem
         
         try
         {
-            /*//  Ensures that the stream pointer is pointing at the beginning of the file
+            //  Ensures that the stream pointer is pointing at the beginning of the file
             sr.DiscardBufferedData();
-            sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);*/
-            //  Checks if there actually is data for the asked level in the file
-            //if (new FileInfo(FILEPATH).Length == 0)
+            sr.BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
+
             s = sr.ReadLine();
 
             if (s == null)
@@ -744,13 +746,13 @@ public class PersistenceSystem
             processedLevelDatas[lvl].promedioFotosContraGuardias = GetfloatFromPos(1);         //  promedioFotosContraGuardias:x
             processedLevelDatas[lvl].promedioFallosMinijuego = GetfloatFromPos(1);             //  promedioFallosMinijuego:x
 
-            //  porcentajeColeccionablesConcretos: id1-% id2-% id3-% id4-%
+            //  porcentajeColeccionablesConcretos: id1/% id2/% id3/% id4/%
             string[] subs;
             string[] subs2;
-            subs = sr.ReadLine().Split(' ');    // id1-% / id2-% /id3-%
+            subs = sr.ReadLine().Split(' ');    // id1/% / id2/% /id3/%
             for (int i = 1; i < subs.Length; i++)
             {
-                subs2 = subs[i].Split('-');     // id1 / %
+                subs2 = subs[i].Split('/');     // id1 / %
                 processedLevelDatas[lvl].porcentajeColeccionablesConcretos[int.Parse(subs2[0])] = uint.Parse(subs2[1]);
             }
         }
@@ -780,6 +782,8 @@ public class PersistenceSystem
     {
         try
         {
+            fs.Seek(0, SeekOrigin.Begin);
+
             for (int i = 0; i < 3; i++)   // Rewrites the 3 lvls in general.txt
             {
                 PrintL("Lvl " + (i + 1));
@@ -803,10 +807,10 @@ public class PersistenceSystem
                 Print("porcentajeColeccionablesConcretos: ");
                 foreach (KeyValuePair<int, uint> collectable in processedLevelDatas[i].porcentajeColeccionablesConcretos)
                 {
-                    Print(collectable.Key.ToString() + '-' + collectable.Value.ToString() + ' ');
+                    Print(collectable.Key.ToString() + '/' + collectable.Value.ToString() + ' ');
                 }
                 sw.Write('\n');
-                Debug.Log("Successfull encoding! lvl: " + i + 1);
+                Debug.Log("Successfull encoding! lvl: " + (i + 1));
             }
         }
         catch (System.Exception e)
