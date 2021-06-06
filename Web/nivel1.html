@@ -7,250 +7,24 @@
   <meta name="keywords" content="website keywords, website keywords" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
-
-<!--Load the AJAX API-->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-
-
-  //Variables
-
-
-	var totalSamples = 69; // número total de partidas acumuladas hasta ahora
-	var mapaCalorMuertes;
-	var promedioMuertes = 5.7;
-	var porcentajeFlashes = 75;
-	var graficaFlashesMuertes = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
-
-	var promedioPuntuacion = 5487.6;
-	var porcentajeColeccionables = 48;
-	var porcentajeColeccionablesConcretos = [ [21645149,55], [21645149,16], [21645149,24]
-	 [21645149,38], [216451490,87], ];;
-	var promedioTiempoNivel = 156.7;
-	var graficaTiempoPuntuacion = [ [1,5], [2,1], [3,0], [4,3], [5,8], ];
-	var graficaColeccionablesPuntuacion  = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
-
-	var promedioDetecciones = 12.8;
-	var mapaCalorGuardias;
-	var promedioGuardiasFlasheados = 3.5;
-
-	var mapaCalorNivel;
-	var porcentajeCamarasDesactivadas = 1.7;
-	var promedioDeteccionCamaras = 14.1;
-	var porcentajeCarretesRecogidos = 2.3;
-	var porcentajeFlashesRecogidos = 3.1;
-	var promedioTiempoEnHallarObjetivo = 78.4;
-
-	var promedioFotosContraGuardias = 2.1;
-	var promedioFallosMinijuego = 0.7;
-
-  var clicksCinematica = 1453415847;
-
-  function sortFunction(a, b) {
-    if (a[0] === b[0]) {
-      return 0;
-    }
-    else {
-      return (a[0] < b[0]) ? -1 : 1;
-    }
-  }
-
-  function fileDecoder(input){
-    //fr.onload=function(){
-      //document.getElementById('output').textContent=fr.result;
-
-      {
-        var file = input.files[0];
-        var reader = new FileReader();
-        reader.onload = function() {
-          var lines = reader.result.split(/[\r\n]+/g); // tolerate both Windows and Unix linebreaks
-          console.log(lines.length);
-          console.log(lines[0]);
-          console.log("Lines es de tipo: " + typeof(lines[0]));
-
-          var currentLine = new String(lines[0]);
-          // COMPROBAMOS SI ARCHIVO CORRECTO
-          /*if(currentLine == "Lvl 1"){ // NO FUNCIONA; INTENTAD ARREGLARLO
-              document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR LINEA';
-              return 0;
-          }*/
-
-          if(lines.length < 35){
-            document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR TAMAÑO';
-            return 0;
-          }
-          // DESCODIFICAMOS
-
-          var splittedLine;
-
-          currentLine = lines[19]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 2
-          currentLine = lines[20]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
-          currentLine = lines[21]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
-          currentLine = lines[22]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
-          currentLine = lines[23]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
-          currentLine = lines[24]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
-          currentLine = lines[25]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
-          currentLine = lines[26]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
-          currentLine = lines[27]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
-          currentLine = lines[28]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
-          currentLine = lines[29]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
-          currentLine = lines[30]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
-          currentLine = lines[31]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
-          currentLine = lines[32]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
-          currentLine = lines[33]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
-          currentLine = lines[34]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
-
-          // GRAFICAS Y DICCIONARIOS (datos con pares) 
-          var auxSplitter;
-          var auxSplitter2;
-          var auxArray = [];
-          
-          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
-          for(var i = 1; i < splittedLine.length; i++){
-            auxSplitter = splittedLine[i].split('/');
-            auxArray.push([parseFloat(auxSplitter[0]), parseFloat(auxSplitter[1])]);
-          }
-          auxArray.sort(sortFunction);
-          graficaTiempoPuntuacion = auxArray; // CAMBIAR POR LA VARIABLE QUE ESTEIS TRATANDO 
-          auxArray = [];
-
-          // MATRICES
-          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
-          auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
-          for(var i = 0; i < auxSplitter.length; i++){
-            auxSplitter2 = auxSplitter[i].split('/'); // ESTO ES UN ARRAY DE LAS COLUMNAS PARA X = i
-            for(var j = 0; j < auxSplitter2.length; j++){
-              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
-            }
-          }
-
-          // ACTUALIZAMOS LA WEB
-          updateWebMetrics();
-
-          document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
-        }
-        //reader.readAsText(file);
-      
-    }
-    //fr.readAsText(this.files[0]);
-  //}
-  }
-
+  <style>
+      #heatmapContainerWrapper { width:100%; height:100%; position:absolute; }
+      #heatmapContainer { width:100%; height:100%;}
+    </style>
   
-
-  function updateWebMetrics(){
-    document.getElementById("totalSamples").textContent = totalSamples;
-    document.getElementById("promedioMuertes").textContent = promedioMuertes;
-    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
-    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
-    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
-    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
-    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
-    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
-    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
-    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
-    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
-    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
-    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
-    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
-    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
-    document.getElementById("clicksCinematica").textContent = clicksCinematica;
-
-    console.log(totalSamples);
-  }
-
-
-  function main(){
-
-    //document.getElementById('inputfile').addEventListener('change', fileDecoder);
-
-    document.getElementById("totalSamples").textContent = totalSamples;
-    document.getElementById("promedioMuertes").textContent = promedioMuertes;
-    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
-    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
-    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
-    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
-    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
-    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
-    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
-    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
-    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
-    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
-    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
-    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
-    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
-    document.getElementById("clicksCinematica").textContent = clicksCinematica;
-
-
-    // INIT MATRICES
-    mapaCalorGuardias = new Array(100);
-    mapaCalorMuertes = new Array(100);
-    mapaCalorNivel = new Array(100);
-
-    for(var i = 0; i < 100; i++){
-      mapaCalorGuardias[i] = new Array(100);
-      mapaCalorMuertes[i] = new Array(100);
-      mapaCalorNivel[i] = new Array(100);
-    }
-  }
-
-  function loadFile(){
-
-  }
-
-
-
-  //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
-
-  // Load the Visualization API and the corechart package.
-  google.charts.load('current', {'packages':['corechart']});
-  // Set a callback to run when the Google Visualization API is loaded.
-  google.charts.setOnLoadCallback(drawChart);
-
-  // Callback that creates and populates a data table,
-  // instantiates the pie chart, passes in the data and
-  // draws it.
-
-
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-      data.addColumn('number', 'X');
-      data.addColumn('number', 'P');
-
-      data.addRows([
-        [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
-        [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
-        [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
-        [graficaTiempoPuntuacion[3][0],graficaTiempoPuntuacion[3][1]],
-        [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
-      ]);
-
-      var options = {
-        hAxis: {
-          title: 'Tiempo'
-        },
-        vAxis: {
-          title: 'Puntuación'
-        },
-        backgroundColor: '#f1f8e9'
-      };
-
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-  }
-</script>
-
 </head>
 
 <body onload="main()" src="/default.asp">
   <div id="main">
     <div id="header">
+	  
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
           <h1><a href="index.html">Paparazzi Infiltration</h1>
             <h2>Usabilidad y Análisis de Juegos.</h2>
           </div>
+		 
       </div>
       <div id="menubar">
         <ul id="menu">
@@ -263,6 +37,12 @@
       </div>
     </div>
     <div id="site_content">
+	<div id="heatmapContainerWrapper">
+      <div id="heatmapContainer">
+
+      </div>
+      
+    </div>
       <div id="content">
         <!-- insert the page content here -->
 
@@ -270,7 +50,7 @@
 
         <input type="file" name="inputfile" id="inputfile" onchange="fileDecoder(this)"><br><pre id="output"></pre> 
         <p> </p>
-        <h1>Nivel 1</h1>
+        <h1>Nivel 2</h1>
         <p> </p>
         <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
         <p> </p>
@@ -325,7 +105,7 @@
         <ul>
           <li>Promedio de fotos utilizadas contra guardias: <span id="promedioFotosContraGuardias"></span></li>
           <li>Promedio fallos durante el minijuego: <span id="promedioFallosMinijuego"></span></li>
-          <li>Promedio de clicks durante las cinemáticas (cálculo de la desesperación): <span id="clicksCinematica"></span></li>
+		  <li>Promedio de clicks durante las cinemáticas (cálculo de la desesperación): <span id="clicksCinematica"></span></li>
         </ul>
 
         <h2>Tables</h2>
@@ -353,5 +133,303 @@
       Copyright &copy; black_pink_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | free from html5webtemplates.co.uk
     </div>
   </div>
+  
+  <!------Carga heatmaps-------->
+  <script src="heatmap.js"></script>
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+
+  //Variables
+
+
+	var totalSamples = 69; // número total de partidas acumuladas hasta ahora
+	var mapaCalorMuertes;
+	var promedioMuertes = 5.7;
+	var porcentajeFlashes = 75;
+	var graficaFlashesMuertes = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioPuntuacion = 5487.6;
+	var porcentajeColeccionables = 48;
+	var porcentajeColeccionablesConcretos = [ [21645149,55], [21645149,16], [21645149,24]
+	 [21645149,38], [216451490,87], ];;
+	var promedioTiempoNivel = 156.7;
+	var graficaTiempoPuntuacion = [ [1,5], [2,1], [3,0], [4,3], [5,8], ];
+	var graficaColeccionablesPuntuacion  = [ [1,5], [3,1], [5,0], [2,3], [0,8], ];
+
+	var promedioDetecciones = 12.8;
+	var mapaCalorGuardias;
+	var promedioGuardiasFlasheados = 3.5;
+
+	var mapaCalorNivel;
+	var porcentajeCamarasDesactivadas = 1.7;
+	var promedioDeteccionCamaras = 14.1;
+	var porcentajeCarretesRecogidos = 2.3;
+	var porcentajeFlashesRecogidos = 3.1;
+	var promedioTiempoEnHallarObjetivo = 78.4;
+
+	var promedioFotosContraGuardias = 2.1;
+	var promedioFallosMinijuego = 0.7;
+
+  var clicksCinematica = 1453415847;
+  
+  
+  function sortFunction(a, b) {
+    if (a[0] === b[0]) {
+      return 0;
+    }
+    else {
+      return (a[0] < b[0]) ? -1 : 1;
+    }
+  }
+
+  function fileDecoder(input){
+    //fr.onload=function(){
+      //document.getElementById('output').textContent=fr.result;
+
+      {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function() {
+          var lines = reader.result.split(/[\r\n]+/g); // tolerate both Windows and Unix linebreaks
+          console.log(lines.length);
+          console.log(lines[0]);
+          console.log("Lines es de tipo: " + typeof(lines[0]));
+
+          var currentLine = new String(lines[0]);
+          // COMPROBAMOS SI ARCHIVO CORRECTO
+          /*if(currentLine == "Lvl 1"){ // NO FUNCIONA; INTENTAD ARREGLARLO
+              document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR LINEA';
+              return 0;
+          }*/
+
+          if(lines.length < 35){
+            document.getElementById('output').textContent = 'ARCHIVO INCORRECTO POR TAMAÑO';
+            return 0;
+          }
+          // DESCODIFICAMOS
+
+          var splittedLine;
+
+          currentLine = lines[36]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 3
+          currentLine = lines[37]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
+          currentLine = lines[38]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
+          currentLine = lines[39]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
+          currentLine = lines[40]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
+          currentLine = lines[41]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
+          currentLine = lines[42]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
+          currentLine = lines[43]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
+          currentLine = lines[44]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
+          currentLine = lines[45]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
+          currentLine = lines[46]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[47]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[48]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
+          currentLine = lines[49]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
+          currentLine = lines[50]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
+          currentLine = lines[51]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
+
+		  // GRAFICAS Y DICCIONARIOS (datos con pares) 
+          var auxSplitter;
+          var auxSplitter2;
+          var auxArray = [];
+          
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          for(var i = 1; i < splittedLine.length; i++){
+            auxSplitter = splittedLine[i].split('/');
+            auxArray.push([parseFloat(auxSplitter[0]), parseFloat(auxSplitter[1])]);
+          }
+          auxArray.sort(sortFunction);
+          graficaTiempoPuntuacion = auxArray; // CAMBIAR POR LA VARIABLE QUE ESTEIS TRATANDO 
+          auxArray = [];
+
+          // MATRICES
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
+          for(var i = 0; i < auxSplitter.length; i++){
+            auxSplitter2 = auxSplitter[i].split('/'); // ESTO ES UN ARRAY DE LAS COLUMNAS PARA X = i
+            for(var j = 0; j < auxSplitter2.length; j++){
+              mapaCalorNivel[j][i] = parseFloat(auxSplitter2[j]); // CAMBIAR VARIABLE POR EL MAPA EN CONCRETO
+            }
+          }
+
+          // ACTUALIZAMOS LA WEB
+          updateWebMetrics();
+
+          document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
+        }
+        //reader.readAsText(file);
+      
+    }
+    //fr.readAsText(this.files[0]);
+  //}
+  }
+
+  
+
+  function updateWebMetrics(){
+    document.getElementById("totalSamples").textContent = totalSamples;
+    document.getElementById("promedioMuertes").textContent = promedioMuertes;
+    document.getElementById("porcentajeFlashes").textContent = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").textContent = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").textContent = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").textContent = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").textContent = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").textContent = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").textContent = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").textContent = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").textContent = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").textContent = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").textContent = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").textContent = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").textContent = promedioFallosMinijuego;
+
+    console.log(totalSamples);
+  }
+
+
+
+
+
+  function main(){
+
+    document.getElementById("totalSamples").innerHTML = totalSamples;
+    document.getElementById("promedioMuertes").innerHTML = promedioMuertes;
+    document.getElementById("porcentajeFlashes").innerHTML = porcentajeFlashes;
+    document.getElementById("promedioPuntuacion").innerHTML = promedioPuntuacion;
+    document.getElementById("porcentajeColeccionables").innerHTML = porcentajeColeccionables;
+    document.getElementById("promedioTiempoNivel").innerHTML = promedioTiempoNivel;
+    document.getElementById("promedioDetecciones").innerHTML = promedioDetecciones;
+    document.getElementById("promedioGuardiasFlasheados").innerHTML = promedioGuardiasFlasheados;
+    document.getElementById("porcentajeCamarasDesactivadas").innerHTML = porcentajeCamarasDesactivadas;
+    document.getElementById("promedioDeteccionCamaras").innerHTML = promedioDeteccionCamaras;
+    document.getElementById("porcentajeCarretesRecogidos").innerHTML = porcentajeCarretesRecogidos;
+    document.getElementById("porcentajeFlashesRecogidos").innerHTML = porcentajeFlashesRecogidos;
+    document.getElementById("promedioTiempoEnHallarObjetivo").innerHTML = promedioTiempoEnHallarObjetivo;
+    document.getElementById("promedioFotosContraGuardias").innerHTML = promedioFotosContraGuardias;
+    document.getElementById("promedioFallosMinijuego").innerHTML = promedioFallosMinijuego;
+    document.getElementById("clicksCinematica").innerHTML = clicksCinematica;
+
+	// INIT MATRICES
+    mapaCalorGuardias = new Array(100);
+    mapaCalorMuertes = new Array(100);
+    mapaCalorNivel = new Array(100);
+
+    for(var i = 0; i < 100; i++){
+      mapaCalorGuardias[i] = new Array(100);
+      mapaCalorMuertes[i] = new Array(100);
+      mapaCalorNivel[i] = new Array(100);
+    }
+    
+  }
+
+  function loadFile(){
+
+  }
+
+
+  //----------ESTO SIRVE PARA CARGAR LA LIBRERÍA----------
+
+  // Load the Visualization API and the corechart package.
+  google.charts.load('current', {'packages':['corechart']});
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.charts.setOnLoadCallback(drawChart);
+  
+  var m =Array(100).fill(Array(100));
+  
+  for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = Math.random() * 100;
+				m[i][j] = x;
+			}
+          }
+  
+  heatmap(250,250,173,384, m);
+
+  // Callback that creates and populates a data table,
+  // instantiates the pie chart, passes in the data and
+  // draws it.
+
+
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X');
+      data.addColumn('number', 'P');
+
+      data.addRows([
+        [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
+        [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
+        [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
+        [graficaTiempoPuntuacion[3][0],graficaTiempoPuntuacion[3][1]],
+        [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
+      ]);
+
+      var options = {
+        hAxis: {
+          title: 'Tiempo'
+        },
+        vAxis: {
+          title: 'Puntuación'
+        },
+        backgroundColor: '#f1f8e9'
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+  }
+  
+  <!------Pintado heatmaps------>
+  function heatmap(tamx, tamy, posx, posy, mat){
+  // helper function
+        function $(id) {
+          return document.getElementById(id);
+        };
+
+        
+        // create a heatmap instance
+        var heatmap = h337.create({
+          container: document.getElementById('heatmapContainer'),
+          maxOpacity: .3,
+          radius: 1,
+          blur: .75,
+          
+        });
+
+        // boundaries for data generation
+        var width = tamx;
+        var height = tamy;
+
+        // generate 1000 datapoints
+        var generate = function() {
+		
+          // randomly generate extremas
+         
+          var max = 100;
+          var min = 0;
+          var t = [];
+
+
+          for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < 100; j++){
+				var x = i / 100 * tamx + posx;
+				var y = j / 100 * tamy + posy;
+				var c = mat[i][j];
+				// btw, we can set a radius on a point basis
+				
+				// add to dataset
+				t.push({ x: x, y:y, value: c, radius: 4 });
+			}
+          }
+          heatmap.setData({
+            min: min,
+            max: max,
+            data: t
+          });
+        };
+        // initial generate
+        generate();
+  }
+</script>
+
 </body>
 </html>
