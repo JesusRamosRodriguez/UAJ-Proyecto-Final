@@ -44,18 +44,18 @@
           <!--  TODO: Meter <b> antes de cada referencia a las variables pa que salgan en bold  -->
 
         <input type="file" name="inputfile" id="inputfile" onchange="fileDecoder(this)"><br><pre id="output"></pre> 
-        <p> </p>
+        <p> </p>
         <h1>Nivel 2</h1>
-        <p> </p>
+        <p> </p>
         <h4>Partidas recopiladas hasta ahora: <b><span id="totalSamples"></span></b></h4>
-        <p> </p>
+        <p> </p>
         <h4>Dificultad y equilibrado</h4>
-        <p> </p>
+        <p> </p>
         <ul>
           <li>Promedio de muertes por jugador:  <b><span id="promedioMuertes"></span></b></li>
           <li>Porcentaje de flashes gastados por jugador: <b><span id="porcentajeFlashes"></span></b></li>
           <li>Mapa de calor de muertes: </li>
-          <p> </p>
+          <p> </p>
 		  <div id="heatmapContainerWrapper">
 			<div id="heatmapContainer">
 
@@ -66,11 +66,11 @@
             <center><img src="Mapas/Level2.jpg" alt="Mapa de calor de muertes - Nivel 2" style="width:250px;height:250px;"></center>
 			
           </div>
-          <p> </p>
+          <p> </p>
           <li>Muertes promedio por flashes empleados: </li>
-          <p> </p>
+          <p> </p>
           <div id="chart_div"></div>
-          <p> </p>
+          <p> </p>
         </ul>
 
         
@@ -83,11 +83,9 @@
           <li>Relación de tiempo empleado por puntuación final del nivel: </li>
 
           <!--Div that will hold the pie chart-->
-          <div id="chart_div2"></div>
+          <div id="chart_div"></div>
 
           <li>Relación de objetos recogidos por puntuación final del nivel: </li>
-          <!--Div that will hold the pie chart-->
-          <div id="chart_div3"></div>
         </ul>
         <h4>IA enemiga</h4>
         <ul>
@@ -102,12 +100,12 @@
           <li>Porcentaje de flashes recogidos: <span id="porcentajeFlashesRecogidos"></span></li>
           <li>Tiempo promedio en encontrar al famoso objetivo <span id="promedioTiempoEnHallarObjetivo"></span></li>
           <li>Mapa de calor promedio de posiciones de jugadores: </li>
-          <p> </p>
+          <p> </p>
           <div id="MapaPosicionesNivel2">
             <center><img src="Mapas/Level2.jpg" alt="Mapa de calor de posicion - Nivel 2" style="width:250px;height:250px;"></center>
 			
           </div>
-          <p> </p>
+          <p> </p>
         </ul>
         <h4>Interfaz y usabilidad</h4>
         <ul>
@@ -202,22 +200,22 @@
 
           var splittedLine;
 
-          currentLine = lines[24]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 2
-          currentLine = lines[25]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
-          currentLine = lines[26]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
-          currentLine = lines[27]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
-          currentLine = lines[28]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
-          currentLine = lines[29]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
-          currentLine = lines[30]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
-          currentLine = lines[31]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
-          currentLine = lines[32]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
-          currentLine = lines[33]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
-          currentLine = lines[34]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
-          currentLine = lines[35]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
-          currentLine = lines[36]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
-          currentLine = lines[37]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
-          currentLine = lines[38]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
-          currentLine = lines[39]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
+          currentLine = lines[21]; splittedLine = currentLine.split(' '); totalSamples = parseInt(splittedLine[1]); // Primera linea de datos Nivel 2
+          currentLine = lines[22]; splittedLine = currentLine.split(' '); promedioMuertes = parseFloat(splittedLine[1]);
+          currentLine = lines[23]; splittedLine = currentLine.split(' '); porcentajeFlashes = parseInt(splittedLine[1]);
+          currentLine = lines[24]; splittedLine = currentLine.split(' '); promedioPuntuacion = parseFloat(splittedLine[1]);
+          currentLine = lines[25]; splittedLine = currentLine.split(' '); porcentajeColeccionables = parseInt(splittedLine[1]);
+          currentLine = lines[26]; splittedLine = currentLine.split(' '); promedioTiempoNivel = parseFloat(splittedLine[1]);
+          currentLine = lines[27]; splittedLine = currentLine.split(' '); promedioDetecciones = parseFloat(splittedLine[1]);
+          currentLine = lines[28]; splittedLine = currentLine.split(' '); promedioGuardiasFlasheados = parseFloat(splittedLine[1]);
+          currentLine = lines[29]; splittedLine = currentLine.split(' '); porcentajeCamarasDesactivadas = parseInt(splittedLine[1]);
+          currentLine = lines[30]; splittedLine = currentLine.split(' '); promedioDeteccionCamaras = parseFloat(splittedLine[1]);
+          currentLine = lines[31]; splittedLine = currentLine.split(' '); porcentajeCarretesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[32]; splittedLine = currentLine.split(' '); porcentajeFlashesRecogidos = parseInt(splittedLine[1]);
+          currentLine = lines[33]; splittedLine = currentLine.split(' '); promedioTiempoEnHallarObjetivo = parseFloat(splittedLine[1]);
+          currentLine = lines[34]; splittedLine = currentLine.split(' '); promedioFotosContraGuardias = parseFloat(splittedLine[1]);
+          currentLine = lines[35]; splittedLine = currentLine.split(' '); promedioFallosMinijuego = parseFloat(splittedLine[1]);
+          currentLine = lines[36]; splittedLine = currentLine.split(' '); porcentajeColeccionablesConcretos = parseFloat(splittedLine[1]);
 
 		  // GRAFICAS Y DICCIONARIOS (datos con pares) 
           var auxSplitter;
@@ -237,7 +235,7 @@
           auxArray = [];
 
           // MATRICES
-          currentLine = lines[43]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+          currentLine = lines[37]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
           auxSplitter = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
 		  
           for(var i = 0; i < auxSplitter.length; i++){
@@ -250,7 +248,7 @@
             }
           }
 		  
-		  currentLine = lines[44]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
+		  currentLine = lines[38]; splittedLine = currentLine.split(' '); // CAMBIAD NUMERO POR LA LINEA DEL DATO
           auxSplitter3 = splittedLine[1].split('|'); // ESTO ES UN ARRAY DE FILAS DE MATRIX
 		  console.log(auxSplitter3.length);
           for(var i = 0; i < auxSplitter3.length; i++){
@@ -265,7 +263,7 @@
           }
           // ACTUALIZAMOS LA WEB
 		  heatmap(250,250,173,0, mapaMuertes);
-		  heatmap(250,250,173,1550, mapaCalorNivel);
+		  heatmap(250,250,173,1204, mapaCalorNivel);
           updateWebMetrics();
           document.getElementById('output').textContent = 'CARGADO CORRECTAMENTE';
         }
@@ -347,47 +345,17 @@ function initMatrices(){
   google.charts.setOnLoadCallback(drawChart);
   
 
-  google.charts.setOnLoadCallback(drawChart2);
-  google.charts.setOnLoadCallback(drawChart3);
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
   // draws it.
 
-  var data;
-var options;
-var chart;
+
   function drawChart() {
-    data = new google.visualization.DataTable();
+    var data = new google.visualization.DataTable();
       data.addColumn('number', 'X');
-      data.addColumn('number', 'F');
+      data.addColumn('number', 'P');
 
-      for(var i = 0; i < graficaFlashesMuertes.length; i++){
-              data.addRows([[graficaFlashesMuertes[i][0],graficaFlashesMuertes[i][1]]]);
-      }
-
-      options = {
-        hAxis: {
-          title: 'Muertes'
-        },
-        vAxis: {
-          title: 'Flashes'
-        },
-        backgroundColor: '#f1f8e9'
-      };
-
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-  }
-
-  var data1;
-  var options1;
-  var chart1;
-  function drawChart2() {
-    data1 = new google.visualization.DataTable();
-      data1.addColumn('number', 'X');
-      data1.addColumn('number', 'P');
-
-      data1.addRows([
+      data.addRows([
         [graficaTiempoPuntuacion[0][0],graficaTiempoPuntuacion[0][1]],
         [graficaTiempoPuntuacion[1][0],graficaTiempoPuntuacion[1][1]],
         [graficaTiempoPuntuacion[2][0],graficaTiempoPuntuacion[2][1]],
@@ -395,7 +363,7 @@ var chart;
         [graficaTiempoPuntuacion[4][0],graficaTiempoPuntuacion[4][1]],
       ]);
 
-      options1 = {
+      var options = {
         hAxis: {
           title: 'Tiempo'
         },
@@ -405,37 +373,8 @@ var chart;
         backgroundColor: '#f1f8e9'
       };
 
-      chart1 = new google.visualization.LineChart(document.getElementById('chart_div2'));
-      chart1.draw(data1, options1);
-  }
-  var data2;
-  var options2;
-  var chart2;
-  function drawChart3() {
-    data2 = new google.visualization.DataTable();
-      data2.addColumn('number', 'X');
-      data2.addColumn('number', 'P');
-
-      data2.addRows([
-        [graficaColeccionablesPuntuacion[0][0],graficaColeccionablesPuntuacion[0][1]],
-        [graficaColeccionablesPuntuacion[1][0],graficaColeccionablesPuntuacion[1][1]],
-        [graficaColeccionablesPuntuacion[2][0],graficaColeccionablesPuntuacion[2][1]],
-        [graficaColeccionablesPuntuacion[3][0],graficaColeccionablesPuntuacion[3][1]],
-        [graficaColeccionablesPuntuacion[4][0],graficaColeccionablesPuntuacion[4][1]],
-      ]);
-
-      options2 = {
-        hAxis: {
-          title: 'Objetos'
-        },
-        vAxis: {
-          title: 'Puntuación'
-        },
-        backgroundColor: '#f1f8e9'
-      };
-
-      chart2 = new google.visualization.LineChart(document.getElementById('chart_div3'));
-      chart2.draw(data2, options2);
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
   }
   
   function heatmap(tamx, tamy, posx, posy, mat){
